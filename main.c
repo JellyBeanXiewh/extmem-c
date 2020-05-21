@@ -90,35 +90,43 @@ Tuple get_tuple(const unsigned char *blk, int offset) {
     return t;
 }
 
+int get_next_address(const unsigned char *blk) {
+    char addr[5] = "";
+    for (int i = 0; i < 4; i++) {
+        addr[i] = (char)*(blk + 56 + i);
+    }
+
+    return atoi(addr);
+}
+
 void write_tuple_to_block(unsigned char *blk, int offset, Tuple t) {
-    char str_A[5] = "", str_B[5] = "";
-    sprintf(str_A, "%d", t.x);
-    sprintf(str_B, "%d", t.y);
-    memcpy(blk + offset, str_A, 4);
-    memcpy(blk + offset + 4, str_B, 4);
+    char str_X[5] = "", str_Y[5] = "";
+    sprintf(str_X, "%d", t.x);
+    sprintf(str_Y, "%d", t.y);
+    memcpy(blk + offset * 8, str_X, 4);
+    memcpy(blk + offset * 8 + 4, str_Y, 4);
 }
 
 void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, Tuple t) {
-    if (*offset >= 56) {
-        char next_addr[9] = "";
+    if (*offset >= 7) {
+        // 当前块已满，写入磁盘
+        char next_addr[9] = "";     // 下一个磁盘块的地址
         sprintf(next_addr, "%d", *addr + 1);
         memcpy(*blk + 56, next_addr, 8);
+
+        // 写入磁盘
         if (writeBlockToDisk(*blk, *addr, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
-        (*addr)++;
-        *blk = getNewBlockInBuffer(&buf);
-        *offset = 0;
+
+        (*addr)++;                          // 更新磁盘块地址
+        *blk = getNewBlockInBuffer(&buf);   // 重新申请 block
+        *offset = 0;                        // 更新输出位置
     }
 
-//    char str_A[5] = "", str_B[5] = "";
-//    sprintf(str_A, "%d", t.x);
-//    sprintf(str_B, "%d", t.y);
-//    memcpy(*blk + *offset, str_A, 4);
-//    memcpy(*blk + *offset + 4, str_B, 4);
     write_tuple_to_block(*blk, *offset, t);
-    *offset += 8;
+    (*offset)++;
 }
 
 void linear_search() {
@@ -186,11 +194,12 @@ int cmp(const void *a, const void *b) {
 }
 
 void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
-    int blk_num = last_blk - first_blk + 1;
-    int set_num = (int)ceil((double) blk_num / 6);
-    int cur_addr = first_blk;
-    int cur_temp_addr = first_temp_blk;
+    int blk_num = last_blk - first_blk + 1;         // 磁盘块数量
+    int set_num = (int)ceil((double) blk_num / 6);  // 子集合数量
+    int cur_addr = first_blk;                       // 当前磁盘块
+    int cur_temp_addr = first_temp_blk;             // 当前输出的磁盘块
 
+    // 储存已排序的元组
     unsigned char *result_blk;
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
@@ -217,6 +226,7 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
         // TODO: 修改排序方式
         qsort(tuples, tuple_cnt, sizeof(Tuple), cmp);
 
+        // 保存中间结果
         int offset = 0;
         for (int j = 0; j < tuple_cnt; j++) {
             write_tuple_to_block_and_disk(&result_blk, &cur_temp_addr, &offset, tuples[j]);
@@ -246,8 +256,11 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
 }
 
 void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk) {
-    int blk_num = last_temp_blk - first_temp_blk + 1;
-    int set_num = (int)ceil((double) blk_num / 6);
+    int blk_num = last_temp_blk - first_temp_blk + 1;   // 磁盘块数量
+    int set_num = (int)ceil((double) blk_num / 6);  // 子集合数量
+
+    int cur_output_addr = first_output_blk;             // 指向当前输出的磁盘块
+    int offset = 0;                                     // 指向下一个输出位置
 
     // 记录结果
     unsigned char *result_blk;
@@ -263,19 +276,127 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk) {
         exit(-1);
     }
 
-    unsigned char *blk[6];
-    int tuple_ptr[set_num];
-    int m_ptr[set_num];
+    unsigned char *blk[set_num];    // 储存每个分组首个未完成排序的块
+    int tuple_ptr[set_num];         // 指向每个块的首个未完成排序元组
+    int blk_sorting_ptr[set_num];   // 记录当前正在排序的块
 
+    // 初始化
     for (int i = 0; i < set_num; i++) {
         if ((blk[i] = readBlockFromDisk(first_temp_blk + i * 6, &buf)) == NULL) {
             perror("Reading Block Failed!\n");
             exit(-1);
         }
-        Tuple t = get_tuple(blk[i], 0);
-        tuple_ptr[i] = 1;
-        write_tuple_to_block(m_compare, i * 8, t);
-        m_ptr[i] = 0;
+        Tuple t = get_tuple(blk[i], 0);             // 读取块中的第一个元组
+        write_tuple_to_block(m_compare, i, t);      // 将元组加入待比较集合
+        tuple_ptr[i] = 1;           // 指向下一个待比较的元组
+        blk_sorting_ptr[i] = 0;     // 指向当前正在排序的块
+    }
+
+    while (1) {
+        int min = MAX_VALUE;        // 最小值
+        int set_index = 0;          // 最小值所在位置
+        int set_finish[6] = {0};    // 记录子集是否已排序完成
+
+        // 找到最小值所在位置
+        for (int i = 0; i < set_num; i++) {
+            Tuple t = get_tuple(m_compare, i);
+            if (t.x == MAX_VALUE) {
+                // 该子集合已完成排序
+                set_finish[i] = 1;
+            }
+            if (t.x < min) {
+                min = t.x;
+                set_index = i;
+            }
+        }
+
+        int finish = 1;     // 记录排序是否已完全完成
+        for (int i = 0; i < set_num; i++) {
+            if (set_finish[i] == 0) {
+                // 仍有子集合未完成排序
+                finish = 0;
+                break;
+            }
+        }
+
+        // 排序已完成
+        if (finish) {
+            // 缓冲区中仍有未写回磁盘的数据
+            if (offset != 0) {
+                // 写入下一块的地址
+                char next_addr[9] = "";
+                sprintf(next_addr, "%d", cur_output_addr + 1);
+                memcpy(result_blk + 56, next_addr, 8);
+
+                if (writeBlockToDisk(result_blk, cur_output_addr, &buf) != 0) {
+                    perror("Writing Block Failed!\n");
+                    exit(-1);
+                }
+            }
+
+            // 释放 block
+            for (int i = 0; i < set_num; i++) {
+                freeBlockInBuffer(blk[i], &buf);
+            }
+
+            // 删除临时文件
+            for (int i = first_temp_blk; i <= last_temp_blk; i++) {
+                if (dropBlockOnDisk(i) != 0) {
+                    perror("Dropping Block Fails!\n");
+                    exit(-1);
+                }
+            }
+
+            freeBlockInBuffer(m_compare, &buf);
+            freeBlockInBuffer(result_blk, &buf);
+            return;
+        }
+
+        // 排序未完成
+        // 获取最小值所在元组
+        Tuple t = get_tuple(m_compare, set_index);
+        // 将该元组写入已排序结果
+        write_tuple_to_block_and_disk(&result_blk, &cur_output_addr, &offset, t);
+
+        // 将下一个元组写入待比较集合
+        int blk_index = tuple_ptr[set_index] / 7;       // 下一个所需排序的元组所在的块在子集合中的位置
+        int tuple_offset = tuple_ptr[set_index] % 7;    // 下一个所需排序的元组在块中的位置
+
+        if (blk_index == blk_sorting_ptr[set_index]) {
+            // 目前正在排序的块还有未排序的元组
+            Tuple temp = get_tuple(blk[set_index], tuple_offset);
+            write_tuple_to_block(m_compare, set_index, temp);
+            tuple_ptr[set_index]++;
+        } else {
+            // 目前正在排序的块中的元组已完全排序
+            int next_addr = get_next_address(blk[set_index]);   // 获取下一块的地址
+            if (blk_index < 6 && next_addr <= last_temp_blk) {
+                // 当前子集合仍有未排序的块
+                // 释放已排序的块
+                freeBlockInBuffer(blk[set_index], &buf);
+
+                // 装载未排序的块
+                if ((blk[set_index] = readBlockFromDisk(first_temp_blk + set_index * 6 + blk_index, &buf)) == NULL) {
+                    perror("Reading Block Failed!\n");
+                    exit(-1);
+                }
+
+                // 更新当前正在排序块的指针
+                blk_sorting_ptr[set_index] = blk_index;
+
+                // 将块中第一个元组加入待比较集合
+                Tuple temp = get_tuple(blk[set_index], tuple_offset);
+                write_tuple_to_block(m_compare, set_index, temp);
+
+                // 指向下一个元组
+                tuple_ptr[set_index]++;
+            } else {
+                // 当前子集合已完全排序
+                // 向待比较集合中写入特定元组，标识该子集合已完成排序
+                Tuple temp = {MAX_VALUE, MAX_VALUE};
+                write_tuple_to_block(m_compare, set_index, temp);
+            }
+        }
     }
 }
 
