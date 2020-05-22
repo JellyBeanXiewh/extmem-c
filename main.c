@@ -7,11 +7,11 @@
 #define BLOCK_SIZE 64
 #define MAX_VALUE 9999
 
-void linear_search(int first_blk, int last_blk, int start_output_blk, int X);
+void linear_search(int first_blk, int last_blk, int first_output_blk, int X);
 void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk, int *last_output_blk);
 void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk, int *last_index_blk);
-void index_search(int first_index_blk, int last_index_blk, int start_output_blk, int X);
-void projection();
+void index_search(int first_index_blk, int last_index_blk, int first_output_blk, int X);
+void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk);
 void sort_merge_join();
 void sort_scan();
 
@@ -126,6 +126,40 @@ int get_next_address(const unsigned char *blk) {
     return atoi(addr);
 }
 
+void write_address_to_block(unsigned char *blk, int address) {
+    char str_addr[9] = "";
+    sprintf(str_addr, "%d", address);
+    memcpy(blk + 56, str_addr, 8);
+}
+
+void write_attr_to_block(unsigned char *blk, int offset, int attr) {
+    char str_attr[5] = "";
+    sprintf(str_attr, "%d", attr);
+    memcpy(blk + offset * 4, str_attr, 4);
+}
+
+void write_attr_to_block_and_disk(unsigned char **blk, int *addr, int *offset, int attr) {
+    if (*offset >= 14) {
+        // 当前块已满，写入磁盘
+        write_address_to_block(*blk, *addr + 1);
+
+        // 写入磁盘
+        if (writeBlockToDisk(*blk, *addr, &buf) != 0) {
+            perror("Writing Block Failed!\n");
+            exit(-1);
+        }
+
+        printf("注：结果写入磁盘：%d\n", *addr);
+
+        (*addr)++;                          // 更新磁盘块地址
+        *blk = getNewBlockInBuffer(&buf);   // 重新申请 block
+        *offset = 0;                        // 更新输出位置
+    }
+
+    write_attr_to_block(*blk, *offset, attr);
+    (*offset)++;
+}
+
 void write_tuple_to_block(unsigned char *blk, int offset, Tuple t) {
     char str_X[5] = "", str_Y[5] = "";
     sprintf(str_X, "%d", t.x);
@@ -137,15 +171,15 @@ void write_tuple_to_block(unsigned char *blk, int offset, Tuple t) {
 void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, Tuple t) {
     if (*offset >= 7) {
         // 当前块已满，写入磁盘
-        char next_addr[9] = "";     // 下一个磁盘块的地址
-        sprintf(next_addr, "%d", *addr + 1);
-        memcpy(*blk + 56, next_addr, 8);
+        write_address_to_block(*blk, *addr + 1);
 
         // 写入磁盘
         if (writeBlockToDisk(*blk, *addr, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
+
+        printf("注：结果写入磁盘：%d\n", *addr);
 
         (*addr)++;                          // 更新磁盘块地址
         *blk = getNewBlockInBuffer(&buf);   // 重新申请 block
@@ -156,7 +190,7 @@ void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, 
     (*offset)++;
 }
 
-void linear_search(int first_blk, int last_blk, int start_output_blk, int X) {
+void linear_search(int first_blk, int last_blk, int first_output_blk, int X) {
     buf.numIO = 0;      // reset
 
     char rel[4];
@@ -170,7 +204,7 @@ void linear_search(int first_blk, int last_blk, int start_output_blk, int X) {
            "----------------------------\n", rel, X);
 
     unsigned char *result_blk;                  // 储存输出结果
-    int cur_output_blk = start_output_blk;      // 当前输出数据块地址
+    int cur_output_blk = first_output_blk;      // 当前输出数据块地址
     int offset = 0;                             // 块中偏移量
     int cnt = 0;                                // 满足条件的元组数
 
@@ -205,21 +239,20 @@ void linear_search(int first_blk, int last_blk, int start_output_blk, int X) {
     // 缓冲区中仍有未写回磁盘的数据
     if (offset != 0) {
         // 写入下一块的地址
-        char next_addr[9] = "";
-        sprintf(next_addr, "%d", cur_output_blk + 1);
-        memcpy(result_blk + 56, next_addr, 8);
+        write_address_to_block(result_blk, cur_output_blk + 1);
 
         if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
+
+        printf("注：结果写入磁盘：%d\n", cur_output_blk);
     } else {
         freeBlockInBuffer(result_blk, &buf);
     }
 
-    printf("注：结果写入磁盘：%d\n\n"
-           "满足选择条件的元组一共 %d 个。\n\n"
-           "IO读写一共 %d 次。\n", start_output_blk, cnt, (int)buf.numIO);
+    printf("\n满足选择条件的元组一共 %d 个。\n\n"
+           "IO读写一共 %d 次。\n", cnt, (int)buf.numIO);
 }
 
 int cmp(const void *a, const void *b) {
@@ -227,6 +260,10 @@ int cmp(const void *a, const void *b) {
 }
 
 void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
+    printf("----------------------------\n"
+           "第一阶段\n"
+           "----------------------------\n");
+
     int blk_num = last_blk - first_blk + 1;         // 磁盘块数量
     int set_num = (int)ceil((double) blk_num / 6);  // 子集合数量
     int cur_addr = first_blk;                       // 当前磁盘块
@@ -240,11 +277,12 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
     }
 
     for (int i = 0; i < set_num; i++) {
+        int blk_cnt = 0;
         unsigned char *blk[6];
         Tuple tuples[6 * 7];
         int tuple_cnt = 0;
         // 将每个子集合装入内存
-        for (int j = 0; j < 6 && cur_addr <= last_blk; j++, cur_addr++) {
+        for (int j = 0; j < 6 && cur_addr <= last_blk; j++, cur_addr++, blk_cnt++) {
             if ((blk[j] = readBlockFromDisk(cur_addr, &buf)) == NULL) {
                 perror("Reading Block Failed!\n");
                 exit(-1);
@@ -268,27 +306,34 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
         // 缓冲区中仍有未写回磁盘的数据
         if (offset != 0) {
             // 写入下一块的地址
-            char next_addr[9] = "";
-            sprintf(next_addr, "%d", cur_temp_addr + 1);
-            memcpy(result_blk + 56, next_addr, 8);
+            write_address_to_block(result_blk, cur_temp_addr + 1);
 
             if (writeBlockToDisk(result_blk, cur_temp_addr, &buf) != 0) {
                 perror("Writing Block Failed!\n");
                 exit(-1);
             }
 
+            printf("注：结果写入磁盘：%d\n", cur_temp_addr);
+
+            result_blk = getNewBlockInBuffer(&buf);
+
             cur_temp_addr++;
         }
 
-        for (int j = 0; j < 6; j++) {
+        for (int j = 0; j < blk_cnt; j++) {
             freeBlockInBuffer(blk[j], &buf);
         }
+
     }
 
     freeBlockInBuffer(result_blk, &buf);
 }
 
 void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *last_output_blk) {
+    printf("----------------------------\n"
+           "第二阶段\n"
+           "----------------------------\n");
+
     int blk_num = last_temp_blk - first_temp_blk + 1;   // 磁盘块数量
     int set_num = (int)ceil((double) blk_num / 6);  // 子集合数量
 
@@ -357,14 +402,14 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
             // 缓冲区中仍有未写回磁盘的数据
             if (offset != 0) {
                 // 写入下一块的地址
-                char next_addr[9] = "";
-                sprintf(next_addr, "%d", cur_output_addr + 1);
-                memcpy(result_blk + 56, next_addr, 8);
+                write_address_to_block(result_blk, cur_output_addr + 1);
 
                 if (writeBlockToDisk(result_blk, cur_output_addr, &buf) != 0) {
                     perror("Writing Block Failed!\n");
                     exit(-1);
                 }
+
+                printf("注：结果写入磁盘：%d\n", cur_output_addr);
             } else {
                 freeBlockInBuffer(result_blk, &buf);
             }
@@ -439,6 +484,15 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
 void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk, int *last_output_blk) {
     buf.numIO = 0;      // reset
 
+    char rel[2];
+    if (first_blk == 1) {
+        strcpy(rel, "R");
+    } else {
+        strcpy(rel, "S");
+    }
+    printf("----------------------------\n"
+           "两阶段多路归并排序关系 %s\n", rel);
+
     int first_temp_blk = first_output_blk * 10;
     int last_temp_blk = first_temp_blk + last_blk - first_blk;
 
@@ -480,24 +534,24 @@ void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk
     // 缓冲区中仍有未写回磁盘的数据
     if (offset != 0) {
         // 写入下一块的地址
-        char next_addr[9] = "";
-        sprintf(next_addr, "%d", cur_output_blk + 1);
-        memcpy(index_blk + 56, next_addr, 8);
+        write_address_to_block(index_blk, cur_output_blk + 1);
 
         if (writeBlockToDisk(index_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
+
+        printf("注：结果写入磁盘：%d\n", cur_output_blk);
     } else {
         freeBlockInBuffer(index_blk, &buf);
     }
 }
 
-void index_search(int first_index_blk, int last_index_blk, int start_output_blk, int X) {
+void index_search(int first_index_blk, int last_index_blk, int first_output_blk, int X) {
     buf.numIO = 0;      // reset
 
     char rel[4];
-    if (first_index_blk == 101) {
+    if (first_index_blk == 301) {
         strcpy(rel, "R.A");
     } else {
         strcpy(rel, "S.C");
@@ -507,7 +561,7 @@ void index_search(int first_index_blk, int last_index_blk, int start_output_blk,
            "基于索引的选择算法 %s=%d:\n"
            "----------------------------\n", rel, X);
 
-    int cur_output_blk = start_output_blk;
+    int cur_output_blk = first_output_blk;
     int offset = 0;
     int cnt = 0;
 
@@ -571,19 +625,18 @@ void index_search(int first_index_blk, int last_index_blk, int start_output_blk,
 
     if (offset != 0) {
         // 写入下一块的地址
-        char next_addr[9] = "";
-        sprintf(next_addr, "%d", cur_output_blk + 1);
-        memcpy(result_blk + 56, next_addr, 8);
+        write_address_to_block(result_blk, cur_output_blk + 1);
 
         if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
+
+        printf("注：结果写入磁盘：%d\n", cur_output_blk);
     } else {
         freeBlockInBuffer(result_blk, &buf);
     }
 
-    printf("注：结果写入磁盘：%d\n\n"
-           "满足选择条件的元组一共 %d 个。\n\n"
-           "IO读写一共 %d 次。\n", start_output_blk, cnt, (int)buf.numIO);
+    printf("\n满足选择条件的元组一共 %d 个。\n\n"
+           "IO读写一共 %d 次。\n", cnt, (int)buf.numIO);
 }
