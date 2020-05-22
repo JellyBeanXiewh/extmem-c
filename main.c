@@ -96,6 +96,9 @@ int main() {
     // 基于索引搜索 R.A = 30 的元组
     index_search(R_first_index_blk, R_last_index_blk, 121, R_A_value);
 
+    // 对关系 R 上的 A 属性（非主码）进行投影并去重
+    projection(R_first_sorted_blk, R_last_sorted_blk, 301);
+
     freeBuffer(&buf);
     return 0;
 }
@@ -639,4 +642,62 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
 
     printf("\n满足选择条件的元组一共 %d 个。\n\n"
            "IO读写一共 %d 次。\n", cnt, (int)buf.numIO);
+}
+
+void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk) {
+    buf.numIO = 0;      // reset
+
+    printf("----------------------------\n"
+           "基于排序的投影算法（并去重）"
+           "----------------------------\n");
+
+    int cur_output_blk = first_output_blk;
+    int offset = 0;
+    int attr_cnt = 0;
+
+    unsigned char *result_blk;
+    if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
+        perror("Get new Block Failed!\n");
+        exit(-1);
+    }
+
+    int last_attr = MAX_VALUE;
+    for (int addr = first_sorted_blk; addr <= last_sorted_blk; addr++) {
+        unsigned char *blk;
+        if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
+            perror("Reading Block Failed!\n");
+            exit(-1);
+        }
+
+        printf("读入数据块 %d\n", addr);
+
+        for (int i = 0; i < 7; i++) {
+            Tuple t = get_tuple(blk, i);
+            if (last_attr != t.x) {
+                last_attr = t.x;
+                write_attr_to_block_and_disk(&result_blk, &cur_output_blk, &offset, last_attr);
+                attr_cnt++;
+                printf("(X=%d)\n", last_attr);
+            }
+        }
+
+        freeBlockInBuffer(blk, &buf);
+    }
+
+    if (offset != 0) {
+        // 当前块已满，写入磁盘
+        write_address_to_block(result_blk, cur_output_blk + 1);
+
+        // 写入磁盘
+        if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
+            perror("Writing Block Failed!\n");
+            exit(-1);
+        }
+
+        printf("注：结果写入磁盘：%d\n", cur_output_blk);
+    } else {
+        freeBlockInBuffer(result_blk, &buf);
+    }
+
+    printf("\n关系 R 上的 A 属性满足投影（去重）的属性值一共 %d 个。\n", attr_cnt);
 }
