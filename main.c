@@ -4,21 +4,26 @@
 #include <math.h>
 #include <stdbool.h>
 #include "extmem.h"
+
 #define BUFFER_SIZE 520
 #define BLOCK_SIZE 64
 #define MAX_VALUE 9999
+
 #define ATTR_NUM_PER_TUPLE 2
-#define ATTR_SIZE 4
-#define TUPLE_SIZE (ATTR_NUM_PER_TUPLE * ATTR_SIZE)
 #define TUPLE_NUM_PER_BLOCK 7
 #define BLOCK_NUM_PER_SET 6
+#define JOIN_TUPLE_NUM_PER_BLOCK 3
+
+#define ATTR_SIZE 4
+#define TUPLE_SIZE (ATTR_SIZE * ATTR_NUM_PER_TUPLE)
+#define JOIN_TUPLE_SIZE (TUPLE_SIZE * 2)
 
 void linear_search(int first_blk, int last_blk, int first_output_blk, int X);
 void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk, int *last_output_blk);
 void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk, int *last_index_blk);
 void index_search(int first_index_blk, int last_index_blk, int first_output_blk, int X);
 void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk);
-void sort_merge_join();
+void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk, int first_output_blk);
 void sort_scan();
 
 typedef struct tuple {
@@ -105,6 +110,9 @@ int main() {
     // 对关系 R 上的 A 属性（非主码）进行投影并去重
     projection(R_first_sorted_blk, R_last_sorted_blk, 301);
 
+    // 基于排序的连接操作
+    sort_merge_join(R_first_sorted_blk, R_last_sorted_blk, S_first_sorted_blk, S_last_sorted_blk, 401);
+
     freeBuffer(&buf);
     return 0;
 }
@@ -170,11 +178,8 @@ void write_attr_to_block_and_disk(unsigned char **blk, int *addr, int *offset, i
 }
 
 void write_tuple_to_block(unsigned char *blk, int offset, Tuple t) {
-    char str_X[ATTR_SIZE + 1] = "", str_Y[ATTR_SIZE + 1] = "";
-    sprintf(str_X, "%d", t.x);
-    sprintf(str_Y, "%d", t.y);
-    memcpy(blk + offset * TUPLE_SIZE, str_X, ATTR_SIZE);
-    memcpy(blk + offset * TUPLE_SIZE + ATTR_SIZE, str_Y, ATTR_SIZE);
+    write_attr_to_block(blk, offset * 2, t.x);
+    write_attr_to_block(blk, offset * 2 + 1, t.y);
 }
 
 void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, Tuple t) {
@@ -199,8 +204,35 @@ void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, 
     (*offset)++;
 }
 
+void write_join_tuple_to_block(unsigned char *blk, int offset, Tuple t1, Tuple t2) {
+    write_tuple_to_block(blk, offset * 2, t1);
+    write_tuple_to_block(blk, offset * 2 + 1, t2);
+}
+
+void write_join_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, Tuple t1, Tuple t2) {
+    if (*offset >= JOIN_TUPLE_NUM_PER_BLOCK) {
+        // 当前块已满，写入磁盘
+        write_address_to_block(*blk, *addr + 1);
+
+        // 写入磁盘
+        if (writeBlockToDisk(*blk, *addr, &buf) != 0) {
+            perror("Writing Block Failed!\n");
+            exit(-1);
+        }
+
+        printf("注：结果写入磁盘：%d\n", *addr);
+
+        (*addr)++;                          // 更新磁盘块地址
+        *blk = getNewBlockInBuffer(&buf);   // 重新申请 block
+        *offset = 0;                        // 更新输出位置
+    }
+
+    write_join_tuple_to_block(*blk, *offset, t1, t2);
+    (*offset)++;
+}
+
 void linear_search(int first_blk, int last_blk, int first_output_blk, int X) {
-    buf.numIO = 0;      // reset
+    size_t old_numIO = buf.numIO;
 
     char rel[4];
     if (first_blk == 1) {
@@ -261,7 +293,7 @@ void linear_search(int first_blk, int last_blk, int first_output_blk, int X) {
     }
 
     printf("\n满足选择条件的元组一共 %d 个。\n\n"
-           "IO读写一共 %d 次。\n", cnt, (int)buf.numIO);
+           "IO读写一共 %lld 次。\n", cnt, buf.numIO - old_numIO);
 }
 
 int cmp(const void *a, const void *b) {
@@ -493,8 +525,6 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
 }
 
 void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk, int *last_output_blk) {
-    buf.numIO = 0;      // reset
-
     char rel[2];
     if (first_blk == 1) {
         strcpy(rel, "R");
@@ -514,8 +544,6 @@ void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output
 }
 
 void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk, int *last_index_blk) {
-    buf.numIO = 0;      // reset
-
     int cur_output_blk = first_index_blk;
 
     int offset = 0;
@@ -559,7 +587,7 @@ void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk
 }
 
 void index_search(int first_index_blk, int last_index_blk, int first_output_blk, int X) {
-    buf.numIO = 0;      // reset
+    size_t old_numIO = buf.numIO;
 
     char rel[4];
     if (first_index_blk == 301) {
@@ -649,14 +677,12 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
     }
 
     printf("\n满足选择条件的元组一共 %d 个。\n\n"
-           "IO读写一共 %d 次。\n", cnt, (int)buf.numIO);
+           "IO读写一共 %lld 次。\n", cnt, buf.numIO - old_numIO);
 }
 
 void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk) {
-    buf.numIO = 0;      // reset
-
     printf("----------------------------\n"
-           "基于排序的投影算法（并去重）"
+           "基于排序的投影算法（并去重）\n"
            "----------------------------\n");
 
     int cur_output_blk = first_output_blk;
@@ -708,4 +734,10 @@ void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk)
     }
 
     printf("\n关系 R 上的 A 属性满足投影（去重）的属性值一共 %d 个。\n", attr_cnt);
+}
+
+void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk, int first_output_blk) {
+    printf("----------------------------\n"
+           "基于排序的连接算法\n"
+           "----------------------------\n");
 }
