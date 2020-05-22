@@ -7,9 +7,10 @@
 #define BLOCK_SIZE 64
 #define MAX_VALUE 9999
 
-void linear_search();
-void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk);
-void selection_based_on_index();
+void linear_search(int first_blk, int last_blk, int start_output_blk, int X);
+void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk, int *last_output_blk);
+void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk, int *last_index_blk);
+void index_search(int first_index_blk, int last_index_blk, int start_output_blk, int X);
 void projection();
 void sort_merge_join();
 void sort_scan();
@@ -27,6 +28,20 @@ int main() {
         perror("Buffer Initialization Failed!\n");
         exit(-1);
     }
+
+    const int R_first_blk = 1;
+    const int R_last_blk = 16;
+    const int R_first_sorted_blk = 201;
+    int R_last_sorted_blk;
+    const int R_first_index_blk = 301;
+    int R_last_index_blk;
+
+    const int S_first_blk = 17;
+    const int S_last_blk = 48;
+    const int S_first_sorted_blk = 217;
+    int S_last_sorted_blk;
+    const int S_first_index_blk = 351;
+    int S_last_index_blk;
 
 //    printf("请选择操作：\n"
 //           "1. 基于线性搜索的关系选择\n"
@@ -46,7 +61,7 @@ int main() {
 //                two_phase_multiway_merge_sort();
 //                break;
 //            case 3:
-//                selection_based_on_index();
+//                index_search();
 //                break;
 //            case 4:
 //                projection();
@@ -64,10 +79,22 @@ int main() {
 //        }
 //    } while (choice != 0);
 
-    linear_search();
+    const int R_A_value = 30;
+    // 线性搜索 R.A = 30 的元组
+    linear_search(R_first_blk, R_last_blk, 101, R_A_value);
 
-    two_phase_multiway_merge_sort(1, 16, 201);
-    two_phase_multiway_merge_sort(17, 48, 217);
+    // 关系 R 排序
+    two_phase_multiway_merge_sort(R_first_blk, R_last_blk, R_first_sorted_blk, &R_last_sorted_blk);
+    // 关系 S 排序
+    two_phase_multiway_merge_sort(S_first_blk, S_last_blk, S_first_sorted_blk, &S_last_sorted_blk);
+
+    // 对关系 R 建立索引块
+    create_index(R_first_sorted_blk, R_last_sorted_blk, R_first_index_blk, &R_last_index_blk);
+    // 对关系 S 建立索引块
+    create_index(S_first_sorted_blk, S_last_sorted_blk, S_first_index_blk, &S_last_index_blk);
+
+    // 基于索引搜索 R.A = 30 的元组
+    index_search(R_first_index_blk, R_last_index_blk, 121, R_A_value);
 
     freeBuffer(&buf);
     return 0;
@@ -129,27 +156,32 @@ void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, 
     (*offset)++;
 }
 
-void linear_search() {
+void linear_search(int first_blk, int last_blk, int start_output_blk, int X) {
     buf.numIO = 0;      // reset
 
+    char rel[4];
+    if (first_blk == 1) {
+        strcpy(rel, "R.A");
+    } else {
+        strcpy(rel, "S.C");
+    }
     printf("----------------------------\n"
-           "基于线性搜索的选择算法 R.A=30:\n"
-           "----------------------------\n");
+           "基于线性搜索的选择算法 %s=%d:\n"
+           "----------------------------\n", rel, X);
 
-    unsigned char *rblk;                // 储存 R 关系
-    unsigned char *result_blk;          // 储存输出结果
-    int start_output_addr = 101;        // 起始输出数据块地址
-    int cur_output_addr = 101;          // 当前输出数据块地址
-    int offset = 0;                     // 块中偏移量
-    int cnt = 0;                        // 满足条件的元组数
+    unsigned char *result_blk;                  // 储存输出结果
+    int cur_output_blk = start_output_blk;      // 当前输出数据块地址
+    int offset = 0;                             // 块中偏移量
+    int cnt = 0;                                // 满足条件的元组数
 
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    for (int addr = 1; addr <= 16; addr++) {
-        if ((rblk = readBlockFromDisk(addr, &buf)) == NULL) {
+    for (int addr = first_blk; addr <= last_blk; addr++) {
+        unsigned char *blk;     // 储存元组
+        if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
             perror("Reading Block Failed!\n");
             exit(-1);
         }
@@ -158,35 +190,36 @@ void linear_search() {
 
         // 获取数据块中的每个元组
         for (int i = 0; i < 7; i++) {
-            Tuple t;
-            t = get_tuple(rblk, i);
+            Tuple t = get_tuple(blk, i);
 
             // R.A = 30
-            if (t.x == 30) {
-                write_tuple_to_block_and_disk(&result_blk, &cur_output_addr, &offset, t);
+            if (t.x == X) {
+                write_tuple_to_block_and_disk(&result_blk, &cur_output_blk, &offset, t);
                 printf("(X=%d, Y=%d)\n", t.x, t.y);
                 cnt++;
             }
         }
-        freeBlockInBuffer(rblk, &buf);
+        freeBlockInBuffer(blk, &buf);
     }
 
     // 缓冲区中仍有未写回磁盘的数据
     if (offset != 0) {
         // 写入下一块的地址
         char next_addr[9] = "";
-        sprintf(next_addr, "%d", cur_output_addr + 1);
+        sprintf(next_addr, "%d", cur_output_blk + 1);
         memcpy(result_blk + 56, next_addr, 8);
 
-        if (writeBlockToDisk(result_blk, cur_output_addr, &buf) != 0) {
+        if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
+    } else {
+        freeBlockInBuffer(result_blk, &buf);
     }
 
     printf("注：结果写入磁盘：%d\n\n"
            "满足选择条件的元组一共 %d 个。\n\n"
-           "IO读写一共 %d 次。\n", start_output_addr, cnt, (int)buf.numIO);
+           "IO读写一共 %d 次。\n", start_output_blk, cnt, (int)buf.numIO);
 }
 
 int cmp(const void *a, const void *b) {
@@ -255,7 +288,7 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
     freeBlockInBuffer(result_blk, &buf);
 }
 
-void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk) {
+void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *last_output_blk) {
     int blk_num = last_temp_blk - first_temp_blk + 1;   // 磁盘块数量
     int set_num = (int)ceil((double) blk_num / 6);  // 子集合数量
 
@@ -332,7 +365,13 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk) {
                     perror("Writing Block Failed!\n");
                     exit(-1);
                 }
+            } else {
+                freeBlockInBuffer(result_blk, &buf);
             }
+
+            *last_output_blk = cur_output_addr;
+
+            freeBlockInBuffer(m_compare, &buf);
 
             // 释放 block
             for (int i = 0; i < set_num; i++) {
@@ -346,9 +385,6 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk) {
                     exit(-1);
                 }
             }
-
-            freeBlockInBuffer(m_compare, &buf);
-            freeBlockInBuffer(result_blk, &buf);
             return;
         }
 
@@ -400,7 +436,7 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk) {
     }
 }
 
-void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk) {
+void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk, int *last_output_blk) {
     buf.numIO = 0;      // reset
 
     int first_temp_blk = first_output_blk * 10;
@@ -409,5 +445,145 @@ void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output
     // 第一阶段
     tpmms_p1(first_blk, last_blk, first_temp_blk);
     // 第二阶段
-    tpmms_p2(first_temp_blk, last_temp_blk, first_output_blk);
+    tpmms_p2(first_temp_blk, last_temp_blk, first_output_blk, last_output_blk);
+}
+
+void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk, int *last_index_blk) {
+    buf.numIO = 0;      // reset
+
+    int cur_output_blk = first_index_blk;
+
+    int offset = 0;
+
+    unsigned char *index_blk;
+    if ((index_blk = getNewBlockInBuffer(&buf)) == NULL) {
+        perror("Get new Block Failed!\n");
+        exit(-1);
+    }
+
+    for (int addr = first_sorted_blk; addr <= last_sorted_blk; addr++) {
+        unsigned char *blk;
+        if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
+            perror("Reading Block Failed!\n");
+            exit(-1);
+        }
+
+        Tuple index = get_tuple(blk, 0);
+        index.y = addr;
+        write_tuple_to_block_and_disk(&index_blk, &cur_output_blk, &offset, index);
+
+        freeBlockInBuffer(blk, &buf);
+    }
+
+    *last_index_blk = cur_output_blk;
+
+    // 缓冲区中仍有未写回磁盘的数据
+    if (offset != 0) {
+        // 写入下一块的地址
+        char next_addr[9] = "";
+        sprintf(next_addr, "%d", cur_output_blk + 1);
+        memcpy(index_blk + 56, next_addr, 8);
+
+        if (writeBlockToDisk(index_blk, cur_output_blk, &buf) != 0) {
+            perror("Writing Block Failed!\n");
+            exit(-1);
+        }
+    } else {
+        freeBlockInBuffer(index_blk, &buf);
+    }
+}
+
+void index_search(int first_index_blk, int last_index_blk, int start_output_blk, int X) {
+    buf.numIO = 0;      // reset
+
+    char rel[4];
+    if (first_index_blk == 101) {
+        strcpy(rel, "R.A");
+    } else {
+        strcpy(rel, "S.C");
+    }
+
+    printf("----------------------------\n"
+           "基于索引的选择算法 %s=%d:\n"
+           "----------------------------\n", rel, X);
+
+    int cur_output_blk = start_output_blk;
+    int offset = 0;
+    int cnt = 0;
+
+    int index_find = 0;
+    int blk_index = 0;
+    for (int addr = first_index_blk; addr <= last_index_blk && !index_find; addr++) {
+        unsigned char *blk;
+        if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
+            perror("Reading Block Failed!\n");
+            exit(-1);
+        }
+
+        printf("读入索引块 %d\n", addr);
+
+        for (int i = 0; i < 7; i++) {
+            Tuple index = get_tuple(blk, i);
+            if (index.x >= X) {
+                index_find = 1;
+                break;
+            }
+            blk_index = index.y;
+        }
+
+        if (!index_find) {
+            printf("没有满足条件的元组。\n");
+        }
+
+        freeBlockInBuffer(blk, &buf);
+    }
+
+    unsigned char *result_blk;
+    if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
+        perror("Get new Block Failed!\n");
+        exit(-1);
+    }
+
+    int finish_flag = 0;
+    for (int addr = blk_index; addr <= last_index_blk && !finish_flag; addr++) {
+        unsigned char *blk;
+        if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
+            perror("Reading Block Failed!\n");
+            exit(-1);
+        }
+
+        printf("读入数据块 %d\n", addr);
+
+        for (int i = 0; i < 7; i++) {
+            Tuple t = get_tuple(blk, i);
+            if (t.x == X) {
+                write_tuple_to_block_and_disk(&result_blk, &cur_output_blk, &offset, t);
+                printf("(X=%d, Y=%d)\n", t.x, t.y);
+                cnt++;
+            } else if (t.x > X) {
+                finish_flag = 1;
+                break;
+            }
+        }
+
+        freeBlockInBuffer(blk, &buf);
+    }
+
+    if (offset != 0) {
+        // 写入下一块的地址
+        char next_addr[9] = "";
+        sprintf(next_addr, "%d", cur_output_blk + 1);
+        memcpy(result_blk + 56, next_addr, 8);
+
+        if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
+            perror("Writing Block Failed!\n");
+            exit(-1);
+        }
+    } else {
+        freeBlockInBuffer(result_blk, &buf);
+    }
+
+    printf("注：结果写入磁盘：%d\n\n"
+           "满足选择条件的元组一共 %d 个。\n\n"
+           "IO读写一共 %d 次。\n", start_output_blk, cnt, (int)buf.numIO);
 }
