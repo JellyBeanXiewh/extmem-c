@@ -2,10 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 #include "extmem.h"
 #define BUFFER_SIZE 520
 #define BLOCK_SIZE 64
 #define MAX_VALUE 9999
+#define ATTR_NUM_PER_TUPLE 2
+#define ATTR_SIZE 4
+#define TUPLE_SIZE (ATTR_NUM_PER_TUPLE * ATTR_SIZE)
+#define TUPLE_NUM_PER_BLOCK 7
+#define BLOCK_NUM_PER_SET 6
 
 void linear_search(int first_blk, int last_blk, int first_output_blk, int X);
 void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk, int *last_output_blk);
@@ -105,15 +111,15 @@ int main() {
 
 Tuple get_tuple(const unsigned char *blk, int offset) {
     Tuple t;
-    char str[5] = "";
-    for (int i = 0; i < 4; i++)
+    char str[ATTR_SIZE + 1] = "";
+    for (int i = 0; i < ATTR_SIZE; i++)
     {
-        str[i] = (char)*(blk + offset * 8 + i);
+        str[i] = (char)*(blk + offset * TUPLE_SIZE + i);
     }
     t.x = atoi(str);
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < ATTR_SIZE; i++)
     {
-        str[i] = (char)*(blk + offset * 8 + 4 + i);
+        str[i] = (char)*(blk + offset * TUPLE_SIZE + ATTR_SIZE + i);
     }
     t.y = atoi(str);
 
@@ -121,28 +127,28 @@ Tuple get_tuple(const unsigned char *blk, int offset) {
 }
 
 int get_next_address(const unsigned char *blk) {
-    char addr[5] = "";
-    for (int i = 0; i < 4; i++) {
-        addr[i] = (char)*(blk + 56 + i);
+    char addr[ATTR_SIZE + 1] = "";
+    for (int i = 0; i < ATTR_SIZE; i++) {
+        addr[i] = (char)*(blk + TUPLE_SIZE * TUPLE_NUM_PER_BLOCK + i);
     }
 
     return atoi(addr);
 }
 
 void write_address_to_block(unsigned char *blk, int address) {
-    char str_addr[9] = "";
+    char str_addr[TUPLE_SIZE + 1] = "";
     sprintf(str_addr, "%d", address);
-    memcpy(blk + 56, str_addr, 8);
+    memcpy(blk + TUPLE_SIZE * TUPLE_NUM_PER_BLOCK, str_addr, TUPLE_SIZE);
 }
 
 void write_attr_to_block(unsigned char *blk, int offset, int attr) {
-    char str_attr[5] = "";
+    char str_attr[ATTR_SIZE + 1] = "";
     sprintf(str_attr, "%d", attr);
-    memcpy(blk + offset * 4, str_attr, 4);
+    memcpy(blk + offset * ATTR_SIZE, str_attr, ATTR_SIZE);
 }
 
 void write_attr_to_block_and_disk(unsigned char **blk, int *addr, int *offset, int attr) {
-    if (*offset >= 14) {
+    if (*offset >= ATTR_NUM_PER_TUPLE * TUPLE_NUM_PER_BLOCK) {
         // 当前块已满，写入磁盘
         write_address_to_block(*blk, *addr + 1);
 
@@ -164,15 +170,15 @@ void write_attr_to_block_and_disk(unsigned char **blk, int *addr, int *offset, i
 }
 
 void write_tuple_to_block(unsigned char *blk, int offset, Tuple t) {
-    char str_X[5] = "", str_Y[5] = "";
+    char str_X[ATTR_SIZE + 1] = "", str_Y[ATTR_SIZE + 1] = "";
     sprintf(str_X, "%d", t.x);
     sprintf(str_Y, "%d", t.y);
-    memcpy(blk + offset * 8, str_X, 4);
-    memcpy(blk + offset * 8 + 4, str_Y, 4);
+    memcpy(blk + offset * TUPLE_SIZE, str_X, ATTR_SIZE);
+    memcpy(blk + offset * TUPLE_SIZE + ATTR_SIZE, str_Y, ATTR_SIZE);
 }
 
 void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, Tuple t) {
-    if (*offset >= 7) {
+    if (*offset >= TUPLE_NUM_PER_BLOCK) {
         // 当前块已满，写入磁盘
         write_address_to_block(*blk, *addr + 1);
 
@@ -226,7 +232,7 @@ void linear_search(int first_blk, int last_blk, int first_output_blk, int X) {
         printf("读入数据块 %d\n", addr);
 
         // 获取数据块中的每个元组
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < TUPLE_NUM_PER_BLOCK; i++) {
             Tuple t = get_tuple(blk, i);
 
             // R.A = 30
@@ -268,7 +274,7 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
            "----------------------------\n");
 
     int blk_num = last_blk - first_blk + 1;         // 磁盘块数量
-    int set_num = (int)ceil((double) blk_num / 6);  // 子集合数量
+    int set_num = (int)ceil((double) blk_num / BLOCK_NUM_PER_SET);  // 子集合数量
     int cur_addr = first_blk;                       // 当前磁盘块
     int cur_temp_addr = first_temp_blk;             // 当前输出的磁盘块
 
@@ -281,18 +287,18 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
 
     for (int i = 0; i < set_num; i++) {
         int blk_cnt = 0;
-        unsigned char *blk[6];
-        Tuple tuples[6 * 7];
+        unsigned char *blk[BLOCK_NUM_PER_SET];
+        Tuple tuples[TUPLE_NUM_PER_BLOCK * BLOCK_NUM_PER_SET];
         int tuple_cnt = 0;
         // 将每个子集合装入内存
-        for (int j = 0; j < 6 && cur_addr <= last_blk; j++, cur_addr++, blk_cnt++) {
+        for (int j = 0; j < BLOCK_NUM_PER_SET && cur_addr <= last_blk; j++, cur_addr++, blk_cnt++) {
             if ((blk[j] = readBlockFromDisk(cur_addr, &buf)) == NULL) {
                 perror("Reading Block Failed!\n");
                 exit(-1);
             }
 
-            for (int offset = 0; offset < 7; offset++) {
-                tuples[j * 7 + offset] = get_tuple(blk[j], offset);
+            for (int offset = 0; offset < TUPLE_NUM_PER_BLOCK; offset++) {
+                tuples[j * TUPLE_NUM_PER_BLOCK + offset] = get_tuple(blk[j], offset);
                 tuple_cnt++;
             }
         }
@@ -338,7 +344,7 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
            "----------------------------\n");
 
     int blk_num = last_temp_blk - first_temp_blk + 1;   // 磁盘块数量
-    int set_num = (int)ceil((double) blk_num / 6);  // 子集合数量
+    int set_num = (int)ceil((double) blk_num / BLOCK_NUM_PER_SET);  // 子集合数量
 
     int cur_output_addr = first_output_blk;             // 指向当前输出的磁盘块
     int offset = 0;                                     // 指向下一个输出位置
@@ -363,7 +369,7 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
 
     // 初始化
     for (int i = 0; i < set_num; i++) {
-        if ((blk[i] = readBlockFromDisk(first_temp_blk + i * 6, &buf)) == NULL) {
+        if ((blk[i] = readBlockFromDisk(first_temp_blk + i * BLOCK_NUM_PER_SET, &buf)) == NULL) {
             perror("Reading Block Failed!\n");
             exit(-1);
         }
@@ -376,14 +382,16 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
     while (1) {
         int min = MAX_VALUE;        // 最小值
         int set_index = 0;          // 最小值所在位置
-        int set_finish[6] = {0};    // 记录子集是否已排序完成
+        bool set_finish[set_num];   // 记录子集是否已排序完成
 
         // 找到最小值所在位置
         for (int i = 0; i < set_num; i++) {
             Tuple t = get_tuple(m_compare, i);
             if (t.x == MAX_VALUE) {
                 // 该子集合已完成排序
-                set_finish[i] = 1;
+                set_finish[i] = true;
+            } else {
+                set_finish[i] = false;
             }
             if (t.x < min) {
                 min = t.x;
@@ -391,11 +399,11 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
             }
         }
 
-        int finish = 1;     // 记录排序是否已完全完成
+        bool finish = true;     // 记录排序是否已完全完成
         for (int i = 0; i < set_num; i++) {
             if (set_finish[i] == 0) {
                 // 仍有子集合未完成排序
-                finish = 0;
+                finish = false;
                 break;
             }
         }
@@ -568,7 +576,7 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
     int offset = 0;
     int cnt = 0;
 
-    int index_find = 0;
+    bool index_find = false;
     int blk_index = 0;
     for (int addr = first_index_blk; addr <= last_index_blk && !index_find; addr++) {
         unsigned char *blk;
@@ -582,7 +590,7 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
         for (int i = 0; i < 7; i++) {
             Tuple index = get_tuple(blk, i);
             if (index.x >= X) {
-                index_find = 1;
+                index_find = true;
                 break;
             }
             blk_index = index.y;
@@ -601,7 +609,7 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
         exit(-1);
     }
 
-    int finish_flag = 0;
+    bool finish_flag = false;
     for (int addr = blk_index; addr <= last_index_blk && !finish_flag; addr++) {
         unsigned char *blk;
         if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
@@ -618,7 +626,7 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
                 printf("(X=%d, Y=%d)\n", t.x, t.y);
                 cnt++;
             } else if (t.x > X) {
-                finish_flag = 1;
+                finish_flag = true;
                 break;
             }
         }
