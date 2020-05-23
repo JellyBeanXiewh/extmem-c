@@ -24,7 +24,7 @@ void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk
 void index_search(int first_index_blk, int last_index_blk, int first_output_blk, int X);
 void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk);
 void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk, int first_output_blk);
-void sort_scan();
+void sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk, int first_output_blk);
 
 typedef struct tuple {
     int x;
@@ -54,42 +54,6 @@ int main() {
     const int S_first_index_blk = 351;
     int S_last_index_blk;
 
-//    printf("请选择操作：\n"
-//           "1. 基于线性搜索的关系选择\n"
-//           "2. 两阶段多路归并排序 (TPMMS)\n"
-//           "3. 基于索引的关系选择\n"
-//           "4. 关系投影\n"
-//           "5. 基于排序的连接操作\n"
-//           "6. 基于排序或散列的两趟扫描\n");
-//    int choice;
-//    do {
-//        scanf("%d", &choice);
-//        switch (choice) {
-//            case 1:
-//                linear_search();
-//                break;
-//            case 2:
-//                two_phase_multiway_merge_sort();
-//                break;
-//            case 3:
-//                index_search();
-//                break;
-//            case 4:
-//                projection();
-//                break;
-//            case 5:
-//                sort_merge_join();
-//                break;
-//            case 6:
-//                sort_scan();
-//                break;
-//            case 0:
-//                break;
-//            default:
-//                printf("输入有误，请重新输入\n");
-//        }
-//    } while (choice != 0);
-
     const int R_A_value = 30;
     // 线性搜索 R.A = 30 的元组
     linear_search(R_first_blk, R_last_blk, 101, R_A_value);
@@ -108,10 +72,13 @@ int main() {
     index_search(R_first_index_blk, R_last_index_blk, 121, R_A_value);
 
     // 对关系 R 上的 A 属性（非主码）进行投影并去重
-    projection(R_first_sorted_blk, R_last_sorted_blk, 301);
+    projection(R_first_sorted_blk, R_last_sorted_blk, 401);
 
     // 基于排序的连接操作
-    sort_merge_join(R_first_sorted_blk, R_last_sorted_blk, S_first_sorted_blk, S_last_sorted_blk, 401);
+    sort_merge_join(R_first_sorted_blk, R_last_sorted_blk, S_first_sorted_blk, S_last_sorted_blk, 501);
+
+    // 基于排序的交操作
+    sort_merge_intersection(R_first_sorted_blk, R_last_sorted_blk, S_first_sorted_blk, S_last_sorted_blk, 601);
 
     freeBuffer(&buf);
     return 0;
@@ -224,6 +191,7 @@ void write_join_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *off
 
         (*addr)++;                          // 更新磁盘块地址
         *blk = getNewBlockInBuffer(&buf);   // 重新申请 block
+        memset(*blk, 0, BLOCK_SIZE);        // 清空
         *offset = 0;                        // 更新输出位置
     }
 
@@ -740,4 +708,253 @@ void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_
     printf("----------------------------\n"
            "基于排序的连接算法\n"
            "----------------------------\n");
+
+    int join_cnt = 0;
+
+    int r_cur_blk = R_first_sorted_blk;
+    int s_cur_blk = S_first_sorted_blk;
+
+    int cur_output_blk = first_output_blk;
+    int offset = 0;
+
+    // 初始化
+    unsigned char *result_blk;
+    if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
+        perror("Get new Block Failed!\n");
+        exit(-1);
+    }
+
+    memset(result_blk, 0, BLOCK_SIZE);        // 清空
+
+    unsigned char *r_blk;
+    if ((r_blk = readBlockFromDisk(r_cur_blk, &buf)) == NULL) {
+        perror("Reading Block Failed!\n");
+        exit(-1);
+    }
+
+    unsigned char *s_blk;
+    if ((s_blk = readBlockFromDisk(s_cur_blk, &buf)) == NULL) {
+        perror("Reading Block Failed!\n");
+        exit(-1);
+    }
+
+    int r_blk_offset = 0;
+    int s_blk_offset = 0;
+
+    while (r_cur_blk <= R_last_sorted_blk && s_cur_blk <= S_last_sorted_blk) {
+        Tuple t_r = get_tuple(r_blk, r_blk_offset);
+        Tuple t_s = get_tuple(s_blk, s_blk_offset);
+
+        if (t_r.x < t_s.x) {
+            r_blk_offset++;
+        } else if (t_r.x > t_s.x) {
+            s_blk_offset++;
+        } else {    // t_r.x == t_s.x
+            int r_temp_blk = r_cur_blk;
+            int r_temp_offset = r_blk_offset;
+
+            unsigned char *r_temp;
+            if ((r_temp = readBlockFromDisk(r_temp_blk, &buf)) == NULL) {
+                perror("Reading Block Failed!\n");
+                exit(-1);
+            }
+
+            while (r_temp_blk <= R_last_sorted_blk) {
+                Tuple t_r_temp = get_tuple(r_temp, r_temp_offset);
+
+                if (t_r_temp.x > t_s.x) {
+                    freeBlockInBuffer(r_temp, &buf);
+                    break;
+                }
+
+                write_join_tuple_to_block_and_disk(&result_blk, &cur_output_blk, &offset, t_r_temp, t_s);
+                join_cnt++;
+
+                r_temp_offset++;
+                if (r_temp_offset >= 7) {
+                    freeBlockInBuffer(r_temp, &buf);
+                    r_temp_blk++;
+                    if (r_temp_blk >= R_last_sorted_blk) {
+                        break;
+                    }
+                    if ((r_temp = readBlockFromDisk(r_temp_blk, &buf)) == NULL) {
+                        perror("Reading Block Failed!\n");
+                        exit(-1);
+                    }
+                    r_temp_offset = 0;
+                }
+            }
+
+            s_blk_offset++;
+        }
+
+        if (r_blk_offset >= 7) {
+            freeBlockInBuffer(r_blk, &buf);
+            r_cur_blk++;
+            if ((r_blk = readBlockFromDisk(r_cur_blk, &buf)) == NULL) {
+                perror("Reading Block Failed!\n");
+                exit(-1);
+            }
+            r_blk_offset = 0;
+        }
+
+        if (s_blk_offset >= 7) {
+            freeBlockInBuffer(s_blk, &buf);
+            s_cur_blk++;
+            if ((s_blk = readBlockFromDisk(s_cur_blk, &buf)) == NULL) {
+                perror("Reading Block Failed!\n");
+                exit(-1);
+            }
+            s_blk_offset = 0;
+        }
+    }
+
+    if (offset != 0) {
+        // 当前块已满，写入磁盘
+        write_address_to_block(result_blk, cur_output_blk + 1);
+
+        // 写入磁盘
+        if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
+            perror("Writing Block Failed!\n");
+            exit(-1);
+        }
+
+        printf("注：结果写入磁盘：%d\n", cur_output_blk);
+    } else {
+        freeBlockInBuffer(result_blk, &buf);
+    }
+
+    freeBlockInBuffer(r_blk, &buf);
+    freeBlockInBuffer(s_blk, &buf);
+
+    printf("\n总共连接 %d 次。\n", join_cnt);
+}
+
+void sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk, int first_output_blk) {
+    printf("----------------------------\n"
+           "基于排序的交算法\n"
+           "----------------------------\n");
+
+    int cnt = 0;
+
+    int r_cur_blk = R_first_sorted_blk;
+    int s_cur_blk = S_first_sorted_blk;
+
+    int cur_output_blk = first_output_blk;
+    int offset = 0;
+
+    // 初始化
+    unsigned char *result_blk;
+    if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
+        perror("Get new Block Failed!\n");
+        exit(-1);
+    }
+
+    memset(result_blk, 0, BLOCK_SIZE);        // 清空
+
+    unsigned char *r_blk;
+    if ((r_blk = readBlockFromDisk(r_cur_blk, &buf)) == NULL) {
+        perror("Reading Block Failed!\n");
+        exit(-1);
+    }
+
+    unsigned char *s_blk;
+    if ((s_blk = readBlockFromDisk(s_cur_blk, &buf)) == NULL) {
+        perror("Reading Block Failed!\n");
+        exit(-1);
+    }
+
+    int r_blk_offset = 0;
+    int s_blk_offset = 0;
+
+    while (r_cur_blk <= R_last_sorted_blk && s_cur_blk <= S_last_sorted_blk) {
+        Tuple t_r = get_tuple(r_blk, r_blk_offset);
+        Tuple t_s = get_tuple(s_blk, s_blk_offset);
+
+        if (t_r.x < t_s.x) {
+            r_blk_offset++;
+        } else if (t_r.x > t_s.x) {
+            s_blk_offset++;
+        } else {    // t_r.x == t_s.x
+            int r_temp_blk = r_cur_blk;
+            int r_temp_offset = r_blk_offset;
+
+            unsigned char *r_temp;
+            if ((r_temp = readBlockFromDisk(r_temp_blk, &buf)) == NULL) {
+                perror("Reading Block Failed!\n");
+                exit(-1);
+            }
+
+            while (r_temp_blk <= R_last_sorted_blk) {
+                Tuple t_r_temp = get_tuple(r_temp, r_temp_offset);
+
+                if (t_r_temp.x > t_s.x) {
+                    freeBlockInBuffer(r_temp, &buf);
+                    break;
+                }
+
+                if (t_r_temp.y == t_s.y) {
+                    write_tuple_to_block_and_disk(&result_blk, &cur_output_blk, &offset, t_s);
+                    printf("(X=%d, Y=%d)\n", t_s.x, t_s.y);
+                    cnt++;
+                }
+
+                r_temp_offset++;
+                if (r_temp_offset >= 7) {
+                    freeBlockInBuffer(r_temp, &buf);
+                    r_temp_blk++;
+                    if (r_temp_blk >= R_last_sorted_blk) {
+                        break;
+                    }
+                    if ((r_temp = readBlockFromDisk(r_temp_blk, &buf)) == NULL) {
+                        perror("Reading Block Failed!\n");
+                        exit(-1);
+                    }
+                    r_temp_offset = 0;
+                }
+            }
+
+            s_blk_offset++;
+        }
+
+        if (r_blk_offset >= 7) {
+            freeBlockInBuffer(r_blk, &buf);
+            r_cur_blk++;
+            if ((r_blk = readBlockFromDisk(r_cur_blk, &buf)) == NULL) {
+                perror("Reading Block Failed!\n");
+                exit(-1);
+            }
+            r_blk_offset = 0;
+        }
+
+        if (s_blk_offset >= 7) {
+            freeBlockInBuffer(s_blk, &buf);
+            s_cur_blk++;
+            if ((s_blk = readBlockFromDisk(s_cur_blk, &buf)) == NULL) {
+                perror("Reading Block Failed!\n");
+                exit(-1);
+            }
+            s_blk_offset = 0;
+        }
+    }
+
+    if (offset != 0) {
+        // 当前块已满，写入磁盘
+        write_address_to_block(result_blk, cur_output_blk + 1);
+
+        // 写入磁盘
+        if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
+            perror("Writing Block Failed!\n");
+            exit(-1);
+        }
+
+        printf("注：结果写入磁盘：%d\n", cur_output_blk);
+    } else {
+        freeBlockInBuffer(result_blk, &buf);
+    }
+
+    freeBlockInBuffer(r_blk, &buf);
+    freeBlockInBuffer(s_blk, &buf);
+
+    printf("\nS 和 R  的交集有 %d 个元组。\n", cnt);
 }
