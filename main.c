@@ -264,10 +264,6 @@ void linear_search(int first_blk, int last_blk, int first_output_blk, int X) {
            "IO读写一共 %lld 次。\n", cnt, buf.numIO - old_numIO);
 }
 
-int cmp(const void *a, const void *b) {
-    return ((Tuple*)a)->x - ((Tuple*)b)->x;
-}
-
 void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
     printf("----------------------------\n"
            "第一阶段\n"
@@ -288,28 +284,38 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
     for (int i = 0; i < set_num; i++) {
         int blk_cnt = 0;
         unsigned char *blk[BLOCK_NUM_PER_SET];
-        Tuple tuples[TUPLE_NUM_PER_BLOCK * BLOCK_NUM_PER_SET];
-        int tuple_cnt = 0;
         // 将每个子集合装入内存
-        for (int j = 0; j < BLOCK_NUM_PER_SET && cur_addr <= last_blk; j++, cur_addr++, blk_cnt++) {
-            if ((blk[j] = readBlockFromDisk(cur_addr, &buf)) == NULL) {
+        for (; blk_cnt < BLOCK_NUM_PER_SET && cur_addr <= last_blk; cur_addr++, blk_cnt++) {
+            if ((blk[blk_cnt] = readBlockFromDisk(cur_addr, &buf)) == NULL) {
                 perror("Reading Block Failed!\n");
                 exit(-1);
             }
-
-            for (int offset = 0; offset < TUPLE_NUM_PER_BLOCK; offset++) {
-                tuples[j * TUPLE_NUM_PER_BLOCK + offset] = get_tuple(blk[j], offset);
-                tuple_cnt++;
-            }
         }
 
-        // TODO: 修改排序方式
-        qsort(tuples, tuple_cnt, sizeof(Tuple), cmp);
+        // Change Sort
+        for (int j = 0; j < blk_cnt * TUPLE_NUM_PER_BLOCK - 1; j++) {
+            int tuple_j_index = j / 7;
+            int tuple_j_offset = j % 7;
+            for (int k = j + 1; k < blk_cnt * TUPLE_NUM_PER_BLOCK; k++) {
+                int tuple_k_index = k / 7;
+                int tuple_k_offset = k % 7;
+                Tuple t1 = get_tuple(blk[tuple_j_index], tuple_j_offset);
+                Tuple t2 = get_tuple(blk[tuple_k_index], tuple_k_offset);
+                if (t1.x > t2.x) {
+                    write_tuple_to_block(blk[tuple_j_index], tuple_j_offset, t2);
+                    write_tuple_to_block(blk[tuple_k_index], tuple_k_offset, t1);
+                }
+            }
+
+        }
 
         // 保存中间结果
         int offset = 0;
-        for (int j = 0; j < tuple_cnt; j++) {
-            write_tuple_to_block_and_disk(&result_blk, &cur_temp_addr, &offset, tuples[j]);
+        for (int j = 0; j < blk_cnt; j++) {
+            for (int k = 0; k < TUPLE_NUM_PER_BLOCK; k++) {
+                Tuple t = get_tuple(blk[j], k);
+                write_tuple_to_block_and_disk(&result_blk, &cur_temp_addr, &offset, t);
+            }
         }
 
         // 缓冲区中仍有未写回磁盘的数据
@@ -956,5 +962,5 @@ void sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int 
     freeBlockInBuffer(r_blk, &buf);
     freeBlockInBuffer(s_blk, &buf);
 
-    printf("\nS 和 R  的交集有 %d 个元组。\n", cnt);
+    printf("\nS 和 R 的交集有 %d 个元组。\n", cnt);
 }
