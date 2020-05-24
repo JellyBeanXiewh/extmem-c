@@ -26,140 +26,140 @@ typedef struct tuple {
 Buffer buf;
 
 /**
- * @brief ÔÚÎŞĞòÊı¾İ¿éÖĞÏßĞÔËÑË÷¾ßÓĞÖ¸¶¨ÊôĞÔµÄÔª×é
- * @param first_blk         µÚÒ»¸öÊı¾İ¿éµÄ±àºÅ
- * @param last_blk          ×îºóÒ»¸öÊı¾İ¿éµÄ±àºÅ
- * @param first_output_blk  µÚÒ»¸öÊä³öÊı¾İ¿éµÄ±àºÅ
- * @param X                 Òª²éÕÒµÄÊôĞÔ
+ * @brief åœ¨æ— åºæ•°æ®å—ä¸­çº¿æ€§æœç´¢å…·æœ‰æŒ‡å®šå±æ€§çš„å…ƒç»„
+ * @param first_blk         ç¬¬ä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+ * @param last_blk          æœ€åä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+ * @param first_output_blk  ç¬¬ä¸€ä¸ªè¾“å‡ºæ•°æ®å—çš„ç¼–å·
+ * @param X                 è¦æŸ¥æ‰¾çš„å±æ€§
  */
 void linear_search(int first_blk, int last_blk, int first_output_blk, int X);
 
 /**
- * @brief Á½½×¶Î¶àÂ·¹é²¢
- * @param first_blk         µÚÒ»¸öÊı¾İ¿éµÄ±àºÅ
- * @param last_blk          ×îºóÒ»¸öÊı¾İ¿éµÄ±àºÅ
- * @param first_output_blk  µÚÒ»¸öÊä³öÊı¾İ¿éµÄ±àºÅ
- * @param last_output_blk   ¼ÇÂ¼×îºóÒ»¸öÊä³öÊı¾İ¿é±àºÅµÄ±äÁ¿µÄµØÖ·
+ * @brief ä¸¤é˜¶æ®µå¤šè·¯å½’å¹¶
+ * @param first_blk         ç¬¬ä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+ * @param last_blk          æœ€åä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+ * @param first_output_blk  ç¬¬ä¸€ä¸ªè¾“å‡ºæ•°æ®å—çš„ç¼–å·
+ * @param last_output_blk   è®°å½•æœ€åä¸€ä¸ªè¾“å‡ºæ•°æ®å—ç¼–å·çš„å˜é‡çš„åœ°å€
  */
 void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output_blk, int *last_output_blk);
 
 /**
- * @brief ¶ÔÒÑÅÅĞòÊı¾İ¿é´´½¨Ë÷Òı
- * @param first_sorted_blk  µÚÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param last_sorted_blk   ×îºóÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param first_index_blk   µÚÒ»¸öË÷Òı¿éµÄ±àºÅ
- * @param last_index_blk    ¼ÇÂ¼×îºóÒ»¸öË÷Òı¿é±àºÅµÄ±äÁ¿µÄµØÖ·
+ * @brief å¯¹å·²æ’åºæ•°æ®å—åˆ›å»ºç´¢å¼•
+ * @param first_sorted_blk  ç¬¬ä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param last_sorted_blk   æœ€åä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param first_index_blk   ç¬¬ä¸€ä¸ªç´¢å¼•å—çš„ç¼–å·
+ * @param last_index_blk    è®°å½•æœ€åä¸€ä¸ªç´¢å¼•å—ç¼–å·çš„å˜é‡çš„åœ°å€
  */
 void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk, int *last_index_blk);
 
 /**
- * @brief Í¨¹ıË÷Òı¿éÔÚÒÑÅÅĞòÊı¾İ¿éÖĞËÑË÷¾ßÓĞÖ¸¶¨ÊôĞÔµÄÔª×é
- * @param first_index_blk   µÚÒ»¸öË÷Òı¿éµÄ±àºÅ
- * @param last_index_blk    ×îºóÒ»¸öË÷Òı¿éµÄ±àºÅ
- * @param first_output_blk  µÚÒ»¸öÊä³öÊı¾İ¿éµÄ±àºÅ
- * @param X                 Òª²éÕÒµÄÊôĞÔ
+ * @brief é€šè¿‡ç´¢å¼•å—åœ¨å·²æ’åºæ•°æ®å—ä¸­æœç´¢å…·æœ‰æŒ‡å®šå±æ€§çš„å…ƒç»„
+ * @param first_index_blk   ç¬¬ä¸€ä¸ªç´¢å¼•å—çš„ç¼–å·
+ * @param last_index_blk    æœ€åä¸€ä¸ªç´¢å¼•å—çš„ç¼–å·
+ * @param first_output_blk  ç¬¬ä¸€ä¸ªè¾“å‡ºæ•°æ®å—çš„ç¼–å·
+ * @param X                 è¦æŸ¥æ‰¾çš„å±æ€§
  */
 void index_search(int first_index_blk, int last_index_blk, int first_output_blk, int X);
 
 /**
- * @brief ¶Ô¹ØÏµµÄµÚÒ»¸öÊôĞÔ½øĞĞÍ¶Ó°²¢È¥ÖØ
- * @param first_sorted_blk  µÚÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param last_sorted_blk   ×îºóÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param first_output_blk  µÚÒ»¸öÊä³öÊı¾İ¿éµÄ±àºÅ
+ * @brief å¯¹å…³ç³»çš„ç¬¬ä¸€ä¸ªå±æ€§è¿›è¡ŒæŠ•å½±å¹¶å»é‡
+ * @param first_sorted_blk  ç¬¬ä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param last_sorted_blk   æœ€åä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param first_output_blk  ç¬¬ä¸€ä¸ªè¾“å‡ºæ•°æ®å—çš„ç¼–å·
  */
 void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk);
 
 /**
- * @brief »ùÓÚÅÅĞò½á¹û£¬¼ÆËã R JOIN S ON R.A = S.C
- * @param R_first_sorted_blk    R ¹ØÏµµÄµÚÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param R_last_sorted_blk     R ¹ØÏµµÄ×îºóÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param S_first_sorted_blk    S ¹ØÏµµÄµÚÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param S_last_sorted_blk     S ¹ØÏµµÄ×îºóÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param first_output_blk      µÚÒ»¸öÊä³öÊı¾İ¿éµÄ±àºÅ
+ * @brief åŸºäºæ’åºç»“æœï¼Œè®¡ç®— R JOIN S ON R.A = S.C
+ * @param R_first_sorted_blk    R å…³ç³»çš„ç¬¬ä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param R_last_sorted_blk     R å…³ç³»çš„æœ€åä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param S_first_sorted_blk    S å…³ç³»çš„ç¬¬ä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param S_last_sorted_blk     S å…³ç³»çš„æœ€åä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param first_output_blk      ç¬¬ä¸€ä¸ªè¾“å‡ºæ•°æ®å—çš„ç¼–å·
  */
 void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk,
                      int first_output_blk);
 
 /**
- * @brief »ùÓÚÅÅĞò½á¹û£¬¼ÆËã R Óë S µÄ½»¼¯
- * @param R_first_sorted_blk    R ¹ØÏµµÄµÚÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param R_last_sorted_blk     R ¹ØÏµµÄ×îºóÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param S_first_sorted_blk    S ¹ØÏµµÄµÚÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param S_last_sorted_blk     S ¹ØÏµµÄ×îºóÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
- * @param first_output_blk      µÚÒ»¸öÊä³öÊı¾İ¿éµÄ±àºÅ
+ * @brief åŸºäºæ’åºç»“æœï¼Œè®¡ç®— R ä¸ S çš„äº¤é›†
+ * @param R_first_sorted_blk    R å…³ç³»çš„ç¬¬ä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param R_last_sorted_blk     R å…³ç³»çš„æœ€åä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param S_first_sorted_blk    S å…³ç³»çš„ç¬¬ä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param S_last_sorted_blk     S å…³ç³»çš„æœ€åä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+ * @param first_output_blk      ç¬¬ä¸€ä¸ªè¾“å‡ºæ•°æ®å—çš„ç¼–å·
  */
 void
 sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk,
                         int first_output_blk);
 
 int main() {
-    // ³õÊ¼»¯ Buffer
+    // åˆå§‹åŒ– Buffer
     if (!initBuffer(BUFFER_SIZE, BLOCK_SIZE, &buf)) {
         perror("Buffer Initialization Failed!\n");
         exit(-1);
     }
 
-    const int R_first_blk = 1;          // R µÄµÚÒ»¸öÊı¾İ¿éµÄ±àºÅ
-    const int R_last_blk = 16;          // R µÄ×îºóÒ»¸öÊı¾İ¿éµÄ±àºÅ
-    const int R_first_sorted_blk = 201; // R µÄµÚÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
-    int R_last_sorted_blk;              // R µÄ×îºóÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
-    const int R_first_index_blk = 301;  // R µÄµÚÒ»¸öË÷Òı¿éµÄ±àºÅ
-    int R_last_index_blk;               // R µÄ×îºóÒ»¸öË÷Òı¿éµÄ±àºÅ
+    const int R_first_blk = 1;          // R çš„ç¬¬ä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+    const int R_last_blk = 16;          // R çš„æœ€åä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+    const int R_first_sorted_blk = 201; // R çš„ç¬¬ä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+    int R_last_sorted_blk;              // R çš„æœ€åä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+    const int R_first_index_blk = 301;  // R çš„ç¬¬ä¸€ä¸ªç´¢å¼•å—çš„ç¼–å·
+    int R_last_index_blk;               // R çš„æœ€åä¸€ä¸ªç´¢å¼•å—çš„ç¼–å·
 
-    const int S_first_blk = 17;         // S µÄµÚÒ»¸öÊı¾İ¿éµÄ±àºÅ
-    const int S_last_blk = 48;          // S µÄ×îºóÒ»¸öÊı¾İ¿éµÄ±àºÅ
-    const int S_first_sorted_blk = 217; // S µÄµÚÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
-    int S_last_sorted_blk;              // S µÄ×îºóÒ»¸öÒÑÅÅĞòÊı¾İ¿éµÄ±àºÅ
-    const int S_first_index_blk = 351;  // S µÄµÚÒ»¸öË÷Òı¿éµÄ±àºÅ
-    int S_last_index_blk;               // S µÄ×îºóÒ»¸öË÷Òı¿éµÄ±àºÅ
+    const int S_first_blk = 17;         // S çš„ç¬¬ä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+    const int S_last_blk = 48;          // S çš„æœ€åä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+    const int S_first_sorted_blk = 217; // S çš„ç¬¬ä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+    int S_last_sorted_blk;              // S çš„æœ€åä¸€ä¸ªå·²æ’åºæ•°æ®å—çš„ç¼–å·
+    const int S_first_index_blk = 351;  // S çš„ç¬¬ä¸€ä¸ªç´¢å¼•å—çš„ç¼–å·
+    int S_last_index_blk;               // S çš„æœ€åä¸€ä¸ªç´¢å¼•å—çš„ç¼–å·
 
-    const int R_A_value = 30;           // ËùÒªËÑË÷µÄ R.A µÄÖµ
-    // ÏßĞÔËÑË÷ R.A = 30 µÄÔª×é
+    const int R_A_value = 30;           // æ‰€è¦æœç´¢çš„ R.A çš„å€¼
+    // çº¿æ€§æœç´¢ R.A = 30 çš„å…ƒç»„
     linear_search(R_first_blk, R_last_blk, 101, R_A_value);
 
-    // ¹ØÏµ R ÅÅĞò
+    // å…³ç³» R æ’åº
     two_phase_multiway_merge_sort(R_first_blk, R_last_blk, R_first_sorted_blk, &R_last_sorted_blk);
-    // ¹ØÏµ S ÅÅĞò
+    // å…³ç³» S æ’åº
     two_phase_multiway_merge_sort(S_first_blk, S_last_blk, S_first_sorted_blk, &S_last_sorted_blk);
 
-    // ¶Ô¹ØÏµ R ½¨Á¢Ë÷Òı¿é
+    // å¯¹å…³ç³» R å»ºç«‹ç´¢å¼•å—
     create_index(R_first_sorted_blk, R_last_sorted_blk, R_first_index_blk, &R_last_index_blk);
-    // ¶Ô¹ØÏµ S ½¨Á¢Ë÷Òı¿é
+    // å¯¹å…³ç³» S å»ºç«‹ç´¢å¼•å—
     create_index(S_first_sorted_blk, S_last_sorted_blk, S_first_index_blk, &S_last_index_blk);
 
-    // »ùÓÚË÷ÒıËÑË÷ R.A = 30 µÄÔª×é
+    // åŸºäºç´¢å¼•æœç´¢ R.A = 30 çš„å…ƒç»„
     index_search(R_first_index_blk, R_last_index_blk, 121, R_A_value);
 
-    // ¶Ô¹ØÏµ R ÉÏµÄ A ÊôĞÔ£¨·ÇÖ÷Âë£©½øĞĞÍ¶Ó°²¢È¥ÖØ
+    // å¯¹å…³ç³» R ä¸Šçš„ A å±æ€§ï¼ˆéä¸»ç ï¼‰è¿›è¡ŒæŠ•å½±å¹¶å»é‡
     projection(R_first_sorted_blk, R_last_sorted_blk, 401);
 
-    // »ùÓÚÅÅĞòµÄÁ¬½Ó²Ù×÷
+    // åŸºäºæ’åºçš„è¿æ¥æ“ä½œ
     sort_merge_join(R_first_sorted_blk, R_last_sorted_blk, S_first_sorted_blk, S_last_sorted_blk, 501);
 
-    // »ùÓÚÅÅĞòµÄ½»²Ù×÷
+    // åŸºäºæ’åºçš„äº¤æ“ä½œ
     sort_merge_intersection(R_first_sorted_blk, R_last_sorted_blk, S_first_sorted_blk, S_last_sorted_blk, 601);
 
-    // ÊÍ·ÅÄÚ´æ
+    // é‡Šæ”¾å†…å­˜
     freeBuffer(&buf);
     return 0;
 }
 
 /**
- * @brief ´ÓÒÑ×°ÔØÖÁÄÚ´æµÄ¿éÖĞ¶ÁÈ¡Ö¸¶¨Ôª×é
- * @param blk       Êı¾İ¿éµÄµØÖ·
- * @param offset    Æ«ÒÆÁ¿£¬ÓĞĞ§Öµ´Ó 0 µ½ 6£¬·Ö±ğ¶ÔÓ¦¿éÖĞµÄ 7 ¸öÔª×é
- * @return          Ôª×é
+ * @brief ä»å·²è£…è½½è‡³å†…å­˜çš„å—ä¸­è¯»å–æŒ‡å®šå…ƒç»„
+ * @param blk       æ•°æ®å—çš„åœ°å€
+ * @param offset    åç§»é‡ï¼Œæœ‰æ•ˆå€¼ä» 0 åˆ° 6ï¼Œåˆ†åˆ«å¯¹åº”å—ä¸­çš„ 7 ä¸ªå…ƒç»„
+ * @return          å…ƒç»„
  */
 Tuple get_tuple(const unsigned char *blk, int offset) {
     Tuple t;
-    // ÊôĞÔ X
+    // å±æ€§ X
     char str[ATTR_SIZE + 1] = "";
     for (int i = 0; i < ATTR_SIZE; i++) {
         str[i] = (char) *(blk + offset * TUPLE_SIZE + i);
     }
     t.x = atoi(str);
     
-    // ÊôĞÔ Y
+    // å±æ€§ Y
     for (int i = 0; i < ATTR_SIZE; i++) {
         str[i] = (char) *(blk + offset * TUPLE_SIZE + ATTR_SIZE + i);
     }
@@ -169,9 +169,9 @@ Tuple get_tuple(const unsigned char *blk, int offset) {
 }
 
 /**
- * @brief ´Ó¿éÖĞ¶ÁÈ¡ÏÂÒ»¸ö¿éµÄ±àºÅ
- * @param blk       Êı¾İ¿éµÄµØÖ·
- * @return          ÏÂÒ»¸öÊı¾İ¿éµÄ±àºÅ
+ * @brief ä»å—ä¸­è¯»å–ä¸‹ä¸€ä¸ªå—çš„ç¼–å·
+ * @param blk       æ•°æ®å—çš„åœ°å€
+ * @return          ä¸‹ä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
  */
 int get_next_address(const unsigned char *blk) {
     char addr[ATTR_SIZE + 1] = "";
@@ -183,9 +183,9 @@ int get_next_address(const unsigned char *blk) {
 }
 
 /**
- * @brief ½«Ö¸¶¨¿éµÄÏÂÒ»¿é±àºÅĞ´ÎªÖ¸¶¨±àºÅ
- * @param blk       Êı¾İ¿éµÄµØÖ·
- * @param address   Ö¸¶¨Êı¾İ¿éµÄ±àºÅ
+ * @brief å°†æŒ‡å®šå—çš„ä¸‹ä¸€å—ç¼–å·å†™ä¸ºæŒ‡å®šç¼–å·
+ * @param blk       æ•°æ®å—çš„åœ°å€
+ * @param address   æŒ‡å®šæ•°æ®å—çš„ç¼–å·
  */
 void write_address_to_block(unsigned char *blk, int address) {
     char str_addr[TUPLE_SIZE + 1] = "";
@@ -194,10 +194,10 @@ void write_address_to_block(unsigned char *blk, int address) {
 }
 
 /**
- * @brief ½«ÊôĞÔÖµĞ´Èë¿éÖĞÖ¸¶¨Î»ÖÃ
- * @param blk       Êı¾İ¿éµÄµØÖ·
- * @param offset    Æ«ÒÆÁ¿£¬ÓĞĞ§Öµ´Ó 0 µ½ 13£¬¹² 14 ¸öÊôĞÔ
- * @param attr      ÊôĞÔÖµ
+ * @brief å°†å±æ€§å€¼å†™å…¥å—ä¸­æŒ‡å®šä½ç½®
+ * @param blk       æ•°æ®å—çš„åœ°å€
+ * @param offset    åç§»é‡ï¼Œæœ‰æ•ˆå€¼ä» 0 åˆ° 13ï¼Œå…± 14 ä¸ªå±æ€§
+ * @param attr      å±æ€§å€¼
  */
 void write_attr_to_block(unsigned char *blk, int offset, int attr) {
     char str_attr[ATTR_SIZE + 1] = "";
@@ -206,28 +206,28 @@ void write_attr_to_block(unsigned char *blk, int offset, int attr) {
 }
 
 /**
- * @brief ½«ÊôĞÔÖµĞ´Èë¿éÖĞÖ¸¶¨Î»ÖÃ£¬²¢ÔÚ¿éĞ´ÂúÊ±×Ô¶¯Ğ´Èë´ÅÅÌ
- * @param blk       ¼ÇÂ¼Êı¾İ¿éµØÖ·µÄ±äÁ¿µÄµØÖ·
- * @param addr      ¼ÇÂ¼µ±Ç°Êä³öÊı¾İ¿é±àºÅµÄ±äÁ¿µÄµØÖ·
- * @param offset    ¼ÇÂ¼Æ«ÒÆÁ¿µÄ±äÁ¿µÄµØÖ·£¬Æ«ÒÆÁ¿ÓĞĞ§Öµ´Ó 0 µ½ 13£¬¹² 14 ¸öÊôĞÔ
- * @param attr      ÊôĞÔÖµ
+ * @brief å°†å±æ€§å€¼å†™å…¥å—ä¸­æŒ‡å®šä½ç½®ï¼Œå¹¶åœ¨å—å†™æ»¡æ—¶è‡ªåŠ¨å†™å…¥ç£ç›˜
+ * @param blk       è®°å½•æ•°æ®å—åœ°å€çš„å˜é‡çš„åœ°å€
+ * @param addr      è®°å½•å½“å‰è¾“å‡ºæ•°æ®å—ç¼–å·çš„å˜é‡çš„åœ°å€
+ * @param offset    è®°å½•åç§»é‡çš„å˜é‡çš„åœ°å€ï¼Œåç§»é‡æœ‰æ•ˆå€¼ä» 0 åˆ° 13ï¼Œå…± 14 ä¸ªå±æ€§
+ * @param attr      å±æ€§å€¼
  */
 void write_attr_to_block_and_disk(unsigned char **blk, int *addr, int *offset, int attr) {
     if (*offset >= ATTR_NUM_PER_TUPLE * TUPLE_NUM_PER_BLOCK) {
-        // µ±Ç°¿éÒÑÂú£¬Ğ´Èë´ÅÅÌ
+        // å½“å‰å—å·²æ»¡ï¼Œå†™å…¥ç£ç›˜
         write_address_to_block(*blk, *addr + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(*blk, *addr, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", *addr);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", *addr);
 
-        (*addr)++;                          // ¸üĞÂ´ÅÅÌ¿é±àºÅ
-        *blk = getNewBlockInBuffer(&buf);   // ÖØĞÂÉêÇë block
-        *offset = 0;                        // ÖØÖÃÊä³öÎ»ÖÃ
+        (*addr)++;                          // æ›´æ–°ç£ç›˜å—ç¼–å·
+        *blk = getNewBlockInBuffer(&buf);   // é‡æ–°ç”³è¯· block
+        *offset = 0;                        // é‡ç½®è¾“å‡ºä½ç½®
     }
 
     write_attr_to_block(*blk, *offset, attr);
@@ -235,10 +235,10 @@ void write_attr_to_block_and_disk(unsigned char **blk, int *addr, int *offset, i
 }
 
 /**
- * @brief ½«Ôª×éĞ´Èë¿éÖĞÖ¸¶¨Î»ÖÃ
- * @param blk       Êı¾İ¿éµÄµØÖ·
- * @param offset    ´Ó 0 µ½ 6£¬¹² 7 ¸öÔª×é
- * @param t         Ôª×é
+ * @brief å°†å…ƒç»„å†™å…¥å—ä¸­æŒ‡å®šä½ç½®
+ * @param blk       æ•°æ®å—çš„åœ°å€
+ * @param offset    ä» 0 åˆ° 6ï¼Œå…± 7 ä¸ªå…ƒç»„
+ * @param t         å…ƒç»„
  */
 void write_tuple_to_block(unsigned char *blk, int offset, Tuple t) {
     write_attr_to_block(blk, offset * 2, t.x);
@@ -246,28 +246,28 @@ void write_tuple_to_block(unsigned char *blk, int offset, Tuple t) {
 }
 
 /**
- * @brief ½«Ôª×éĞ´Èë¿éÖĞÖ¸¶¨Î»ÖÃ£¬²¢ÔÚ¿éĞ´ÂúÊ±×Ô¶¯Ğ´Èë´ÅÅÌ
- * @param blk       ¼ÇÂ¼Êı¾İ¿éµØÖ·µÄ±äÁ¿µÄµØÖ·
- * @param addr      ¼ÇÂ¼µ±Ç°Êä³öÊı¾İ¿é±àºÅµÄ±äÁ¿µÄµØÖ·
- * @param offset    ¼ÇÂ¼Æ«ÒÆÁ¿µÄ±äÁ¿µÄµØÖ·£¬Æ«ÒÆÁ¿ÓĞĞ§Öµ´Ó 0 µ½ 6£¬¹² 7 ¸öÔª×é
- * @param t         Ôª×é
+ * @brief å°†å…ƒç»„å†™å…¥å—ä¸­æŒ‡å®šä½ç½®ï¼Œå¹¶åœ¨å—å†™æ»¡æ—¶è‡ªåŠ¨å†™å…¥ç£ç›˜
+ * @param blk       è®°å½•æ•°æ®å—åœ°å€çš„å˜é‡çš„åœ°å€
+ * @param addr      è®°å½•å½“å‰è¾“å‡ºæ•°æ®å—ç¼–å·çš„å˜é‡çš„åœ°å€
+ * @param offset    è®°å½•åç§»é‡çš„å˜é‡çš„åœ°å€ï¼Œåç§»é‡æœ‰æ•ˆå€¼ä» 0 åˆ° 6ï¼Œå…± 7 ä¸ªå…ƒç»„
+ * @param t         å…ƒç»„
  */
 void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, Tuple t) {
     if (*offset >= TUPLE_NUM_PER_BLOCK) {
-        // µ±Ç°¿éÒÑÂú£¬Ğ´Èë´ÅÅÌ
+        // å½“å‰å—å·²æ»¡ï¼Œå†™å…¥ç£ç›˜
         write_address_to_block(*blk, *addr + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(*blk, *addr, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", *addr);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", *addr);
 
-        (*addr)++;                          // ¸üĞÂ´ÅÅÌ¿é±àºÅ
-        *blk = getNewBlockInBuffer(&buf);   // ÖØĞÂÉêÇë block
-        *offset = 0;                        // ÖØÖÃÊä³öÎ»ÖÃ
+        (*addr)++;                          // æ›´æ–°ç£ç›˜å—ç¼–å·
+        *blk = getNewBlockInBuffer(&buf);   // é‡æ–°ç”³è¯· block
+        *offset = 0;                        // é‡ç½®è¾“å‡ºä½ç½®
     }
 
     write_tuple_to_block(*blk, *offset, t);
@@ -275,11 +275,11 @@ void write_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, 
 }
 
 /**
- * @brief ½«Á¬½ÓºóµÄÔª×éĞ´Èë¿éÖĞÖ¸¶¨Î»ÖÃ
- * @param blk       Êı¾İ¿éµÄµØÖ·
- * @param offset    Æ«ÒÆÁ¿£¬ÓĞĞ§Öµ´Ó 0 µ½ 2£¬¹² 3 ¸öÁ¬½ÓºóµÄÔª×é
- * @param t1        Á¬½ÓÇ°µÄÔª×é 1
- * @param t2        Á¬½ÓÇ°µÄÔª×é 2
+ * @brief å°†è¿æ¥åçš„å…ƒç»„å†™å…¥å—ä¸­æŒ‡å®šä½ç½®
+ * @param blk       æ•°æ®å—çš„åœ°å€
+ * @param offset    åç§»é‡ï¼Œæœ‰æ•ˆå€¼ä» 0 åˆ° 2ï¼Œå…± 3 ä¸ªè¿æ¥åçš„å…ƒç»„
+ * @param t1        è¿æ¥å‰çš„å…ƒç»„ 1
+ * @param t2        è¿æ¥å‰çš„å…ƒç»„ 2
  */
 void write_join_tuple_to_block(unsigned char *blk, int offset, Tuple t1, Tuple t2) {
     write_tuple_to_block(blk, offset * 2, t1);
@@ -287,30 +287,30 @@ void write_join_tuple_to_block(unsigned char *blk, int offset, Tuple t1, Tuple t
 }
 
 /**
- * @brief ½«Á¬½ÓºóµÄÔª×éĞ´Èë¿éÖĞÖ¸¶¨Î»ÖÃ£¬²¢ÔÚ¿éĞ´ÂúÊ±×Ô¶¯Ğ´Èë´ÅÅÌ
- * @param blk       ¼ÇÂ¼Êı¾İ¿éµØÖ·µÄ±äÁ¿µÄµØÖ·
- * @param addr      ¼ÇÂ¼µ±Ç°Êä³öÊı¾İ¿é±àºÅµÄ±äÁ¿µÄµØÖ·
- * @param offset    ¼ÇÂ¼Æ«ÒÆÁ¿µÄ±äÁ¿µÄµØÖ·£¬Æ«ÒÆÁ¿ÓĞĞ§Öµ´Ó 0 µ½ 2£¬¹² 3 ¸öÁ¬½ÓºóµÄÔª×é
- * @param t1        Á¬½ÓÇ°µÄÔª×é 1
- * @param t2        Á¬½ÓÇ°µÄÔª×é 2
+ * @brief å°†è¿æ¥åçš„å…ƒç»„å†™å…¥å—ä¸­æŒ‡å®šä½ç½®ï¼Œå¹¶åœ¨å—å†™æ»¡æ—¶è‡ªåŠ¨å†™å…¥ç£ç›˜
+ * @param blk       è®°å½•æ•°æ®å—åœ°å€çš„å˜é‡çš„åœ°å€
+ * @param addr      è®°å½•å½“å‰è¾“å‡ºæ•°æ®å—ç¼–å·çš„å˜é‡çš„åœ°å€
+ * @param offset    è®°å½•åç§»é‡çš„å˜é‡çš„åœ°å€ï¼Œåç§»é‡æœ‰æ•ˆå€¼ä» 0 åˆ° 2ï¼Œå…± 3 ä¸ªè¿æ¥åçš„å…ƒç»„
+ * @param t1        è¿æ¥å‰çš„å…ƒç»„ 1
+ * @param t2        è¿æ¥å‰çš„å…ƒç»„ 2
  */
 void write_join_tuple_to_block_and_disk(unsigned char **blk, int *addr, int *offset, Tuple t1, Tuple t2) {
     if (*offset >= JOIN_TUPLE_NUM_PER_BLOCK) {
-        // µ±Ç°¿éÒÑÂú£¬Ğ´Èë´ÅÅÌ
+        // å½“å‰å—å·²æ»¡ï¼Œå†™å…¥ç£ç›˜
         write_address_to_block(*blk, *addr + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(*blk, *addr, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", *addr);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", *addr);
 
-        (*addr)++;                          // ¸üĞÂ´ÅÅÌ¿é±àºÅ
-        *blk = getNewBlockInBuffer(&buf);   // ÖØĞÂÉêÇë block
-        memset(*blk, 0, BLOCK_SIZE);        // Çå¿Õ
-        *offset = 0;                        // ÖØÖÃÊä³öÎ»ÖÃ
+        (*addr)++;                          // æ›´æ–°ç£ç›˜å—ç¼–å·
+        *blk = getNewBlockInBuffer(&buf);   // é‡æ–°ç”³è¯· block
+        memset(*blk, 0, BLOCK_SIZE);        // æ¸…ç©º
+        *offset = 0;                        // é‡ç½®è¾“å‡ºä½ç½®
     }
 
     write_join_tuple_to_block(*blk, *offset, t1, t2);
@@ -326,35 +326,35 @@ void linear_search(int first_blk, int last_blk, int first_output_blk, int X) {
     } else {
         strcpy(rel, "S.C");
     }
-    printf("----------------------------\n"
-           "»ùÓÚÏßĞÔËÑË÷µÄÑ¡ÔñËã·¨ %s=%d:\n"
-           "----------------------------\n", rel, X);
+    printf("-------------------------------\n"
+           "åŸºäºçº¿æ€§æœç´¢çš„é€‰æ‹©ç®—æ³• %s=%d:\n"
+           "-------------------------------\n", rel, X);
 
-    int cur_output_blk = first_output_blk;      // µ±Ç°Êä³öÊı¾İ¿éµØÖ·
-    int offset = 0;                             // Êä³ö¿éÖĞÆ«ÒÆÁ¿
-    int cnt = 0;                                // Âú×ãÌõ¼şµÄÔª×éÊı
+    int cur_output_blk = first_output_blk;      // å½“å‰è¾“å‡ºæ•°æ®å—åœ°å€
+    int offset = 0;                             // è¾“å‡ºå—ä¸­åç§»é‡
+    int cnt = 0;                                // æ»¡è¶³æ¡ä»¶çš„å…ƒç»„æ•°
 
-    unsigned char *result_blk;                  // ´¢´æÊä³ö½á¹û
+    unsigned char *result_blk;                  // å‚¨å­˜è¾“å‡ºç»“æœ
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    // Öğ¸öËÑË÷
+    // é€ä¸ªæœç´¢
     for (int addr = first_blk; addr <= last_blk; addr++) {
-        unsigned char *blk;     // ´¢´æÔª×é
+        unsigned char *blk;     // å‚¨å­˜å…ƒç»„
         if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
             perror("Reading Block Failed!\n");
             exit(-1);
         }
 
-        printf("¶ÁÈëÊı¾İ¿é %d\n", addr);
+        printf("è¯»å…¥æ•°æ®å— %d\n", addr);
 
-        // »ñÈ¡Êı¾İ¿éÖĞµÄÃ¿¸öÔª×é
+        // è·å–æ•°æ®å—ä¸­çš„æ¯ä¸ªå…ƒç»„
         for (int i = 0; i < TUPLE_NUM_PER_BLOCK; i++) {
             Tuple t = get_tuple(blk, i);
 
-            // Âú×ãÌõ¼ş
+            // æ»¡è¶³æ¡ä»¶
             if (t.x == X) {
                 write_tuple_to_block_and_disk(&result_blk, &cur_output_blk, &offset, t);
                 printf("(X=%d, Y=%d)\n", t.x, t.y);
@@ -365,54 +365,54 @@ void linear_search(int first_blk, int last_blk, int first_output_blk, int X) {
     }
 
     if (offset != 0) {
-        // »º³åÇøÖĞÈÔÓĞÎ´Ğ´»Ø´ÅÅÌµÄÊı¾İ
-        // Ğ´ÈëÏÂÒ»¿éµÄµØÖ·
+        // ç¼“å†²åŒºä¸­ä»æœ‰æœªå†™å›ç£ç›˜çš„æ•°æ®
+        // å†™å…¥ä¸‹ä¸€å—çš„åœ°å€
         write_address_to_block(result_blk, cur_output_blk + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", cur_output_blk);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", cur_output_blk);
     } else {
-        // ÊÍ·Å
+        // é‡Šæ”¾
         freeBlockInBuffer(result_blk, &buf);
     }
 
-    printf("\nÂú×ãÑ¡ÔñÌõ¼şµÄÔª×éÒ»¹² %d ¸ö¡£\n\n"
-           "IO¶ÁĞ´Ò»¹² %lld ´Î¡£\n", cnt, buf.numIO - old_numIO);
+    printf("\næ»¡è¶³é€‰æ‹©æ¡ä»¶çš„å…ƒç»„ä¸€å…± %d ä¸ªã€‚\n\n"
+           "IOè¯»å†™ä¸€å…± %lld æ¬¡ã€‚\n", cnt, buf.numIO - old_numIO);
 }
 
 /**
- * @brief Á½½×¶Î¶àÂ·¹é²¢ÅÅĞòµÄµÚÒ»½×¶Î
- * @param first_blk         µÚÒ»¸öÊı¾İ¿éµÄ±àºÅ
- * @param last_blk          ×îºóÒ»¸öÊı¾İ¿éµÄ±àºÅ
- * @param first_temp_blk    µÚÒ»¸ö´¢´æÖĞ¼ä½á¹ûµÄÊı¾İ¿éµÄ±àºÅ
+ * @brief ä¸¤é˜¶æ®µå¤šè·¯å½’å¹¶æ’åºçš„ç¬¬ä¸€é˜¶æ®µ
+ * @param first_blk         ç¬¬ä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+ * @param last_blk          æœ€åä¸€ä¸ªæ•°æ®å—çš„ç¼–å·
+ * @param first_temp_blk    ç¬¬ä¸€ä¸ªå‚¨å­˜ä¸­é—´ç»“æœçš„æ•°æ®å—çš„ç¼–å·
  */
 void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
-    printf("----------------------------\n"
-           "µÚÒ»½×¶Î\n"
-           "----------------------------\n");
+    printf("-------------------------------\n"
+           "ç¬¬ä¸€é˜¶æ®µ\n"
+           "-------------------------------\n");
 
-    int blk_num = last_blk - first_blk + 1;         // ´ÅÅÌ¿éÊıÁ¿
-    int set_num = (int) ceil((double) blk_num / BLOCK_NUM_PER_SET);  // ×Ó¼¯ºÏÊıÁ¿
-    int cur_addr = first_blk;                       // µ±Ç°´ÅÅÌ¿é
-    int cur_temp_addr = first_temp_blk;             // µ±Ç°Êä³öµÄ´ÅÅÌ¿é
+    int blk_num = last_blk - first_blk + 1;         // ç£ç›˜å—æ•°é‡
+    int set_num = (int) ceil((double) blk_num / BLOCK_NUM_PER_SET);  // å­é›†åˆæ•°é‡
+    int cur_addr = first_blk;                       // å½“å‰ç£ç›˜å—
+    int cur_temp_addr = first_temp_blk;             // å½“å‰è¾“å‡ºçš„ç£ç›˜å—
 
-    // ´¢´æÒÑÅÅĞòµÄÔª×é
+    // å‚¨å­˜å·²æ’åºçš„å…ƒç»„
     unsigned char *result_blk;
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    // °´×é±éÀú
+    // æŒ‰ç»„éå†
     for (int i = 0; i < set_num; i++) {
-        int blk_cnt = 0;    // ¼ÇÂ¼ÄÚ´æÖĞµÄ¿éÊıÁ¿
+        int blk_cnt = 0;    // è®°å½•å†…å­˜ä¸­çš„å—æ•°é‡
         unsigned char *blk[BLOCK_NUM_PER_SET];
-        // ½«Ã¿¸ö×Ó¼¯ºÏ×°ÈëÄÚ´æ
+        // å°†æ¯ä¸ªå­é›†åˆè£…å…¥å†…å­˜
         for (; blk_cnt < BLOCK_NUM_PER_SET && cur_addr <= last_blk; cur_addr++, blk_cnt++) {
             if ((blk[blk_cnt] = readBlockFromDisk(cur_addr, &buf)) == NULL) {
                 perror("Reading Block Failed!\n");
@@ -420,7 +420,7 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
             }
         }
 
-        // ½»»»ÅÅĞò
+        // äº¤æ¢æ’åº
         for (int j = 0; j < blk_cnt * TUPLE_NUM_PER_BLOCK - 1; j++) {
             int tuple_j_index = j / 7;
             int tuple_j_offset = j % 7;
@@ -437,7 +437,7 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
 
         }
 
-        // ±£´æÖĞ¼ä½á¹û
+        // ä¿å­˜ä¸­é—´ç»“æœ
         int offset = 0;
         for (int j = 0; j < blk_cnt; j++) {
             for (int k = 0; k < TUPLE_NUM_PER_BLOCK; k++) {
@@ -446,94 +446,94 @@ void tpmms_p1(int first_blk, int last_blk, int first_temp_blk) {
             }
         }
 
-        // »º³åÇøÖĞÈÔÓĞÎ´Ğ´»Ø´ÅÅÌµÄÊı¾İ
+        // ç¼“å†²åŒºä¸­ä»æœ‰æœªå†™å›ç£ç›˜çš„æ•°æ®
         if (offset != 0) {
-            // Ğ´ÈëÏÂÒ»¿éµÄµØÖ·
+            // å†™å…¥ä¸‹ä¸€å—çš„åœ°å€
             write_address_to_block(result_blk, cur_temp_addr + 1);
 
-            // Ğ´Èë´ÅÅÌ
+            // å†™å…¥ç£ç›˜
             if (writeBlockToDisk(result_blk, cur_temp_addr, &buf) != 0) {
                 perror("Writing Block Failed!\n");
                 exit(-1);
             }
 
-            printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", cur_temp_addr);
+            printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", cur_temp_addr);
 
-            // ÉêÇëĞÂ¿é
+            // ç”³è¯·æ–°å—
             result_blk = getNewBlockInBuffer(&buf);
 
-            cur_temp_addr++;    // ¸üĞÂÊä³ö¿é±àºÅ
+            cur_temp_addr++;    // æ›´æ–°è¾“å‡ºå—ç¼–å·
         }
 
-        // ÊÍ·Å
+        // é‡Šæ”¾
         for (int j = 0; j < blk_cnt; j++) {
             freeBlockInBuffer(blk[j], &buf);
         }
 
     }
 
-    // ÊÍ·Å
+    // é‡Šæ”¾
     freeBlockInBuffer(result_blk, &buf);
 }
 
 /**
- * @brief Á½½×¶Î¶àÂ·¹é²¢ÅÅĞòµÄµÚ¶ş½×¶Î
- * @param first_temp_blk    µÚÒ»¸ö´¢´æÖĞ¼ä½á¹ûµÄÊı¾İ¿éµÄ±àºÅ
- * @param last_temp_blk     ×îºóÒ»¸ö´¢´æÖĞ¼ä½á¹ûµÄÊı¾İ¿éµÄ±àºÅ
- * @param first_output_blk  µÚÒ»¸öÊä³öÊı¾İ¿éµÄ±àºÅ
- * @param last_output_blk   ¼ÇÂ¼×îºóÒ»¸öÊä³öÊı¾İ¿é±àºÅµÄ±äÁ¿µÄµØÖ·
+ * @brief ä¸¤é˜¶æ®µå¤šè·¯å½’å¹¶æ’åºçš„ç¬¬äºŒé˜¶æ®µ
+ * @param first_temp_blk    ç¬¬ä¸€ä¸ªå‚¨å­˜ä¸­é—´ç»“æœçš„æ•°æ®å—çš„ç¼–å·
+ * @param last_temp_blk     æœ€åä¸€ä¸ªå‚¨å­˜ä¸­é—´ç»“æœçš„æ•°æ®å—çš„ç¼–å·
+ * @param first_output_blk  ç¬¬ä¸€ä¸ªè¾“å‡ºæ•°æ®å—çš„ç¼–å·
+ * @param last_output_blk   è®°å½•æœ€åä¸€ä¸ªè¾“å‡ºæ•°æ®å—ç¼–å·çš„å˜é‡çš„åœ°å€
  */
 void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *last_output_blk) {
-    printf("----------------------------\n"
-           "µÚ¶ş½×¶Î\n"
-           "----------------------------\n");
+    printf("-------------------------------\n"
+           "ç¬¬äºŒé˜¶æ®µ\n"
+           "-------------------------------\n");
 
-    int blk_num = last_temp_blk - first_temp_blk + 1;   // ´ÅÅÌ¿éÊıÁ¿
-    int set_num = (int) ceil((double) blk_num / BLOCK_NUM_PER_SET);  // ×Ó¼¯ºÏÊıÁ¿
+    int blk_num = last_temp_blk - first_temp_blk + 1;   // ç£ç›˜å—æ•°é‡
+    int set_num = (int) ceil((double) blk_num / BLOCK_NUM_PER_SET);  // å­é›†åˆæ•°é‡
 
-    int cur_output_addr = first_output_blk;             // Ö¸Ïòµ±Ç°Êä³öµÄ´ÅÅÌ¿é
-    int offset = 0;                                     // Ö¸ÏòÏÂÒ»¸öÊä³öÎ»ÖÃ
+    int cur_output_addr = first_output_blk;             // æŒ‡å‘å½“å‰è¾“å‡ºçš„ç£ç›˜å—
+    int offset = 0;                                     // æŒ‡å‘ä¸‹ä¸€ä¸ªè¾“å‡ºä½ç½®
 
-    // ¼ÇÂ¼½á¹û
+    // è®°å½•ç»“æœ
     unsigned char *result_blk;
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    // ÓÃÓÚ±È½Ï
+    // ç”¨äºæ¯”è¾ƒ
     unsigned char *m_compare;
     if ((m_compare = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    unsigned char *blk[set_num];    // ´¢´æÃ¿¸ö·Ö×éÊ×¸öÎ´Íê³ÉÅÅĞòµÄ¿é
-    int tuple_ptr[set_num];         // Ö¸ÏòÃ¿¸ö¿éµÄÊ×¸öÎ´Íê³ÉÅÅĞòÔª×é
-    int blk_sorting_ptr[set_num];   // ¼ÇÂ¼µ±Ç°ÕıÔÚÅÅĞòµÄ¿é
+    unsigned char *blk[set_num];    // å‚¨å­˜æ¯ä¸ªåˆ†ç»„é¦–ä¸ªæœªå®Œæˆæ’åºçš„å—
+    int tuple_ptr[set_num];         // æŒ‡å‘æ¯ä¸ªå—çš„é¦–ä¸ªæœªå®Œæˆæ’åºå…ƒç»„
+    int blk_sorting_ptr[set_num];   // è®°å½•å½“å‰æ­£åœ¨æ’åºçš„å—
 
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     for (int i = 0; i < set_num; i++) {
         if ((blk[i] = readBlockFromDisk(first_temp_blk + i * BLOCK_NUM_PER_SET, &buf)) == NULL) {
             perror("Reading Block Failed!\n");
             exit(-1);
         }
-        Tuple t = get_tuple(blk[i], 0);             // ¶ÁÈ¡¿éÖĞµÄµÚÒ»¸öÔª×é
-        write_tuple_to_block(m_compare, i, t);      // ½«Ôª×é¼ÓÈë´ı±È½Ï¼¯ºÏ
-        tuple_ptr[i] = 1;           // Ö¸ÏòÏÂÒ»¸ö´ı±È½ÏµÄÔª×é
-        blk_sorting_ptr[i] = 0;     // Ö¸Ïòµ±Ç°ÕıÔÚÅÅĞòµÄ¿é
+        Tuple t = get_tuple(blk[i], 0);             // è¯»å–å—ä¸­çš„ç¬¬ä¸€ä¸ªå…ƒç»„
+        write_tuple_to_block(m_compare, i, t);      // å°†å…ƒç»„åŠ å…¥å¾…æ¯”è¾ƒé›†åˆ
+        tuple_ptr[i] = 1;           // æŒ‡å‘ä¸‹ä¸€ä¸ªå¾…æ¯”è¾ƒçš„å…ƒç»„
+        blk_sorting_ptr[i] = 0;     // æŒ‡å‘å½“å‰æ­£åœ¨æ’åºçš„å—
     }
 
     while (1) {
-        int min = MAX_VALUE;        // ×îĞ¡Öµ
-        int set_index = 0;          // ×îĞ¡ÖµËùÔÚÎ»ÖÃ
-        bool set_finish[set_num];   // ¼ÇÂ¼×Ó¼¯ÊÇ·ñÒÑÅÅĞòÍê³É
+        int min = MAX_VALUE;        // æœ€å°å€¼
+        int set_index = 0;          // æœ€å°å€¼æ‰€åœ¨ä½ç½®
+        bool set_finish[set_num];   // è®°å½•å­é›†æ˜¯å¦å·²æ’åºå®Œæˆ
 
-        // ËÑË÷×îĞ¡ÖµËùÔÚÎ»ÖÃ
+        // æœç´¢æœ€å°å€¼æ‰€åœ¨ä½ç½®
         for (int i = 0; i < set_num; i++) {
             Tuple t = get_tuple(m_compare, i);
             if (t.x == MAX_VALUE) {
-                // ¸Ã×Ó¼¯ºÏÒÑÍê³ÉÅÅĞò
+                // è¯¥å­é›†åˆå·²å®Œæˆæ’åº
                 set_finish[i] = true;
             } else {
                 set_finish[i] = false;
@@ -544,20 +544,20 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
             }
         }
 
-        bool finish = true;     // ¼ÇÂ¼ÅÅĞòÊÇ·ñÒÑÍêÈ«Íê³É
+        bool finish = true;     // è®°å½•æ’åºæ˜¯å¦å·²å®Œå…¨å®Œæˆ
         for (int i = 0; i < set_num; i++) {
             if (set_finish[i] == 0) {
-                // ÈÔÓĞ×Ó¼¯ºÏÎ´Íê³ÉÅÅĞò
+                // ä»æœ‰å­é›†åˆæœªå®Œæˆæ’åº
                 finish = false;
                 break;
             }
         }
 
-        // ÅÅĞòÒÑÍê³É
+        // æ’åºå·²å®Œæˆ
         if (finish) {
-            // »º³åÇøÖĞÈÔÓĞÎ´Ğ´»Ø´ÅÅÌµÄÊı¾İ
+            // ç¼“å†²åŒºä¸­ä»æœ‰æœªå†™å›ç£ç›˜çš„æ•°æ®
             if (offset != 0) {
-                // Ğ´ÈëÏÂÒ»¿éµÄµØÖ·
+                // å†™å…¥ä¸‹ä¸€å—çš„åœ°å€
                 write_address_to_block(result_blk, cur_output_addr + 1);
 
                 if (writeBlockToDisk(result_blk, cur_output_addr, &buf) != 0) {
@@ -565,22 +565,22 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
                     exit(-1);
                 }
 
-                printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", cur_output_addr);
+                printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", cur_output_addr);
             } else {
-                // ÊÍ·Å
+                // é‡Šæ”¾
                 freeBlockInBuffer(result_blk, &buf);
             }
 
-            // ¼ÇÂ¼×îºóÒ»¿éµÄ±àºÅ
+            // è®°å½•æœ€åä¸€å—çš„ç¼–å·
             *last_output_blk = cur_output_addr;
 
-            // ÊÍ·Å block
+            // é‡Šæ”¾ block
             freeBlockInBuffer(m_compare, &buf);
             for (int i = 0; i < set_num; i++) {
                 freeBlockInBuffer(blk[i], &buf);
             }
 
-            // É¾³ıÁÙÊ±ÎÄ¼ş
+            // åˆ é™¤ä¸´æ—¶æ–‡ä»¶
             for (int i = first_temp_blk; i <= last_temp_blk; i++) {
                 if (dropBlockOnDisk(i) != 0) {
                     perror("Dropping Block Fails!\n");
@@ -590,47 +590,47 @@ void tpmms_p2(int first_temp_blk, int last_temp_blk, int first_output_blk, int *
             return;
         }
 
-        // ÅÅĞòÎ´Íê³É
-        // »ñÈ¡×îĞ¡ÖµËùÔÚÔª×é
+        // æ’åºæœªå®Œæˆ
+        // è·å–æœ€å°å€¼æ‰€åœ¨å…ƒç»„
         Tuple t = get_tuple(m_compare, set_index);
-        // ½«¸ÃÔª×éĞ´ÈëÒÑÅÅĞò½á¹û
+        // å°†è¯¥å…ƒç»„å†™å…¥å·²æ’åºç»“æœ
         write_tuple_to_block_and_disk(&result_blk, &cur_output_addr, &offset, t);
 
-        // ½«ÏÂÒ»¸öÔª×éĞ´Èë´ı±È½Ï¼¯ºÏ
-        int blk_index = tuple_ptr[set_index] / 7;       // ÏÂÒ»¸öËùĞèÅÅĞòµÄÔª×éËùÔÚµÄ¿éÔÚ×Ó¼¯ºÏÖĞµÄÎ»ÖÃ
-        int tuple_offset = tuple_ptr[set_index] % 7;    // ÏÂÒ»¸öËùĞèÅÅĞòµÄÔª×éÔÚ¿éÖĞµÄÎ»ÖÃ
+        // å°†ä¸‹ä¸€ä¸ªå…ƒç»„å†™å…¥å¾…æ¯”è¾ƒé›†åˆ
+        int blk_index = tuple_ptr[set_index] / 7;       // ä¸‹ä¸€ä¸ªæ‰€éœ€æ’åºçš„å…ƒç»„æ‰€åœ¨çš„å—åœ¨å­é›†åˆä¸­çš„ä½ç½®
+        int tuple_offset = tuple_ptr[set_index] % 7;    // ä¸‹ä¸€ä¸ªæ‰€éœ€æ’åºçš„å…ƒç»„åœ¨å—ä¸­çš„ä½ç½®
 
         if (blk_index == blk_sorting_ptr[set_index]) {
-            // Ä¿Ç°ÕıÔÚÅÅĞòµÄ¿é»¹ÓĞÎ´ÅÅĞòµÄÔª×é
+            // ç›®å‰æ­£åœ¨æ’åºçš„å—è¿˜æœ‰æœªæ’åºçš„å…ƒç»„
             Tuple temp = get_tuple(blk[set_index], tuple_offset);
             write_tuple_to_block(m_compare, set_index, temp);
             tuple_ptr[set_index]++;
         } else {
-            // Ä¿Ç°ÕıÔÚÅÅĞòµÄ¿éÖĞµÄÔª×éÒÑÍêÈ«ÅÅĞò
-            int next_addr = get_next_address(blk[set_index]);   // »ñÈ¡ÏÂÒ»¿éµÄµØÖ·
+            // ç›®å‰æ­£åœ¨æ’åºçš„å—ä¸­çš„å…ƒç»„å·²å®Œå…¨æ’åº
+            int next_addr = get_next_address(blk[set_index]);   // è·å–ä¸‹ä¸€å—çš„åœ°å€
             if (blk_index < 6 && next_addr <= last_temp_blk) {
-                // µ±Ç°×Ó¼¯ºÏÈÔÓĞÎ´ÅÅĞòµÄ¿é
-                // ÊÍ·ÅÒÑÅÅĞòµÄ¿é
+                // å½“å‰å­é›†åˆä»æœ‰æœªæ’åºçš„å—
+                // é‡Šæ”¾å·²æ’åºçš„å—
                 freeBlockInBuffer(blk[set_index], &buf);
 
-                // ×°ÔØÎ´ÅÅĞòµÄ¿é
+                // è£…è½½æœªæ’åºçš„å—
                 if ((blk[set_index] = readBlockFromDisk(first_temp_blk + set_index * 6 + blk_index, &buf)) == NULL) {
                     perror("Reading Block Failed!\n");
                     exit(-1);
                 }
 
-                // ¸üĞÂµ±Ç°ÕıÔÚÅÅĞò¿éµÄÖ¸Õë
+                // æ›´æ–°å½“å‰æ­£åœ¨æ’åºå—çš„æŒ‡é’ˆ
                 blk_sorting_ptr[set_index] = blk_index;
 
-                // ½«¿éÖĞµÚÒ»¸öÔª×é¼ÓÈë´ı±È½Ï¼¯ºÏ
+                // å°†å—ä¸­ç¬¬ä¸€ä¸ªå…ƒç»„åŠ å…¥å¾…æ¯”è¾ƒé›†åˆ
                 Tuple temp = get_tuple(blk[set_index], tuple_offset);
                 write_tuple_to_block(m_compare, set_index, temp);
 
-                // Ö¸ÏòÏÂÒ»¸öÔª×é
+                // æŒ‡å‘ä¸‹ä¸€ä¸ªå…ƒç»„
                 tuple_ptr[set_index]++;
             } else {
-                // µ±Ç°×Ó¼¯ºÏÒÑÍêÈ«ÅÅĞò
-                // Ïò´ı±È½Ï¼¯ºÏÖĞĞ´ÈëÌØ¶¨Ôª×é£¬±êÊ¶¸Ã×Ó¼¯ºÏÒÑÍê³ÉÅÅĞò
+                // å½“å‰å­é›†åˆå·²å®Œå…¨æ’åº
+                // å‘å¾…æ¯”è¾ƒé›†åˆä¸­å†™å…¥ç‰¹å®šå…ƒç»„ï¼Œæ ‡è¯†è¯¥å­é›†åˆå·²å®Œæˆæ’åº
                 Tuple temp = {MAX_VALUE, MAX_VALUE};
                 write_tuple_to_block(m_compare, set_index, temp);
             }
@@ -645,30 +645,41 @@ void two_phase_multiway_merge_sort(int first_blk, int last_blk, int first_output
     } else {
         strcpy(rel, "S");
     }
-    printf("----------------------------\n"
-           "Á½½×¶Î¶àÂ·¹é²¢ÅÅĞò¹ØÏµ %s\n", rel);
+    printf("-------------------------------\n"
+           "ä¸¤é˜¶æ®µå¤šè·¯å½’å¹¶æ’åºå…³ç³» %s\n", rel);
 
-    int first_temp_blk = first_output_blk * 10;                 // µÚÒ»¸öÁÙÊ±¿éµÄ±àºÅ
-    int last_temp_blk = first_temp_blk + last_blk - first_blk;  // ×îºóÒ»¸öÁÙÊ±¿éµÄ±àºÅ
+    int first_temp_blk = first_output_blk * 10;                 // ç¬¬ä¸€ä¸ªä¸´æ—¶å—çš„ç¼–å·
+    int last_temp_blk = first_temp_blk + last_blk - first_blk;  // æœ€åä¸€ä¸ªä¸´æ—¶å—çš„ç¼–å·
 
-    // µÚÒ»½×¶Î
+    // ç¬¬ä¸€é˜¶æ®µ
     tpmms_p1(first_blk, last_blk, first_temp_blk);
-    // µÚ¶ş½×¶Î
+    // ç¬¬äºŒé˜¶æ®µ
     tpmms_p2(first_temp_blk, last_temp_blk, first_output_blk, last_output_blk);
 }
 
 void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk, int *last_index_blk) {
-    int cur_output_blk = first_index_blk;   // µ±Ç°Êä³ö¿éµÄ±àºÅ
-    int offset = 0;                         // Êä³ö¿éÖĞÆ«ÒÆÁ¿
+    char rel[2];
+    if (first_sorted_blk == 201) {
+        strcpy(rel, "R");
+    } else {
+        strcpy(rel, "S");
+    }
 
-    // Êä³öÓÃµÄË÷Òı¿é
+    printf("-------------------------------\n"
+           "å¯¹å…³ç³» %s åˆ›å»ºç´¢å¼•\n"
+           "-------------------------------\n", rel);
+
+    int cur_output_blk = first_index_blk;   // å½“å‰è¾“å‡ºå—çš„ç¼–å·
+    int offset = 0;                         // è¾“å‡ºå—ä¸­åç§»é‡
+
+    // è¾“å‡ºç”¨çš„ç´¢å¼•å—
     unsigned char *index_blk;
     if ((index_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    // Öğ¸ö±éÀú
+    // é€ä¸ªéå†
     for (int addr = first_sorted_blk; addr <= last_sorted_blk; addr++) {
         unsigned char *blk;
         if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
@@ -676,7 +687,7 @@ void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk
             exit(-1);
         }
 
-        // ¼ÇÂ¼Ã¿¸ö¿éµÚÒ»¸öÔª×éµÄµÚÒ»¸öÊôĞÔ
+        // è®°å½•æ¯ä¸ªå—ç¬¬ä¸€ä¸ªå…ƒç»„çš„ç¬¬ä¸€ä¸ªå±æ€§
         Tuple index = get_tuple(blk, 0);
         index.y = addr;
         write_tuple_to_block_and_disk(&index_blk, &cur_output_blk, &offset, index);
@@ -684,22 +695,22 @@ void create_index(int first_sorted_blk, int last_sorted_blk, int first_index_blk
         freeBlockInBuffer(blk, &buf);
     }
 
-    *last_index_blk = cur_output_blk;   // ¼ÇÂ¼×îºóÒ»¸öË÷Òı¿éµÄ±àºÅ
+    *last_index_blk = cur_output_blk;   // è®°å½•æœ€åä¸€ä¸ªç´¢å¼•å—çš„ç¼–å·
 
-    // »º³åÇøÖĞÈÔÓĞÎ´Ğ´»Ø´ÅÅÌµÄÊı¾İ
+    // ç¼“å†²åŒºä¸­ä»æœ‰æœªå†™å›ç£ç›˜çš„æ•°æ®
     if (offset != 0) {
-        // Ğ´ÈëÏÂÒ»¿éµÄµØÖ·
+        // å†™å…¥ä¸‹ä¸€å—çš„åœ°å€
         write_address_to_block(index_blk, cur_output_blk + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(index_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", cur_output_blk);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", cur_output_blk);
     } else {
-        // ÊÍ·Å
+        // é‡Šæ”¾
         freeBlockInBuffer(index_blk, &buf);
     }
 }
@@ -714,17 +725,17 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
         strcpy(rel, "S.C");
     }
 
-    printf("----------------------------\n"
-           "»ùÓÚË÷ÒıµÄÑ¡ÔñËã·¨ %s=%d:\n"
-           "----------------------------\n", rel, X);
+    printf("-------------------------------\n"
+           "åŸºäºç´¢å¼•çš„é€‰æ‹©ç®—æ³• %s=%d:\n"
+           "-------------------------------\n", rel, X);
 
-    int cur_output_blk = first_output_blk;  // µ±Ç°Êä³ö¿éµÄ±àºÅ
-    int offset = 0;                         // Êä³ö¿éÖĞµÄÆ«ÒÆÁ¿
-    int cnt = 0;                            // Âú×ãÌõ¼şµÄÔª×éÊı
+    int cur_output_blk = first_output_blk;  // å½“å‰è¾“å‡ºå—çš„ç¼–å·
+    int offset = 0;                         // è¾“å‡ºå—ä¸­çš„åç§»é‡
+    int cnt = 0;                            // æ»¡è¶³æ¡ä»¶çš„å…ƒç»„æ•°
 
-    bool index_find = false;    // ¼ÇÂ¼ÊÇ·ñÕÒµ½ËùĞèµÄË÷Òı
-    int blk_index = 0;          // ËùĞè¶ÁÈ¡µÄÊ×¸öÊı¾İ¿é
-    // ±éÀúË÷Òı¿é
+    bool index_find = false;    // è®°å½•æ˜¯å¦æ‰¾åˆ°æ‰€éœ€çš„ç´¢å¼•
+    int blk_index = 0;          // æ‰€éœ€è¯»å–çš„é¦–ä¸ªæ•°æ®å—
+    // éå†ç´¢å¼•å—
     for (int addr = first_index_blk; addr <= last_index_blk && !index_find; addr++) {
         unsigned char *blk;
         if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
@@ -732,13 +743,13 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
             exit(-1);
         }
 
-        printf("¶ÁÈëË÷Òı¿é %d\n", addr);
+        printf("è¯»å…¥ç´¢å¼•å— %d\n", addr);
 
-        // ±éÀú¿éÖĞÃ¿¸öË÷Òı
+        // éå†å—ä¸­æ¯ä¸ªç´¢å¼•
         for (int i = 0; i < 7; i++) {
             Tuple index = get_tuple(blk, i);
             if (index.x >= X) {
-                // ²»Ğ¡ÓÚËùĞèÖµ£¬ĞèÒª´ÓÇ°Ò»¸öË÷Òı¿ªÊ¼ËÑË÷
+                // ä¸å°äºæ‰€éœ€å€¼ï¼Œéœ€è¦ä»å‰ä¸€ä¸ªç´¢å¼•å¼€å§‹æœç´¢
                 index_find = true;
                 break;
             }
@@ -746,21 +757,22 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
         }
 
         if (!index_find) {
-            printf("Ã»ÓĞÂú×ãÌõ¼şµÄÔª×é¡£\n");
+            printf("æ²¡æœ‰æ»¡è¶³æ¡ä»¶çš„å…ƒç»„ã€‚\n");
+            return;
         }
 
-        // ÊÍ·Å
+        // é‡Šæ”¾
         freeBlockInBuffer(blk, &buf);
     }
 
-    unsigned char *result_blk;      // ´¢´æÊä³ö½á¹û
+    unsigned char *result_blk;      // å‚¨å­˜è¾“å‡ºç»“æœ
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    bool finish_flag = false;       // ¼ÇÂ¼ÊÇ·ñËÑË÷Íê±Ï
-    // ´ÓÖ¸¶¨Î»ÖÃ¿ªÊ¼±éÀúÊı¾İ¿é
+    bool finish_flag = false;       // è®°å½•æ˜¯å¦æœç´¢å®Œæ¯•
+    // ä»æŒ‡å®šä½ç½®å¼€å§‹éå†æ•°æ®å—
     for (int addr = blk_index; addr <= last_index_blk && !finish_flag; addr++) {
         unsigned char *blk;
         if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
@@ -768,65 +780,65 @@ void index_search(int first_index_blk, int last_index_blk, int first_output_blk,
             exit(-1);
         }
 
-        printf("¶ÁÈëÊı¾İ¿é %d\n", addr);
+        printf("è¯»å…¥æ•°æ®å— %d\n", addr);
 
-        // ±éÀú¿éÖĞÃ¿¸öÔª×é
+        // éå†å—ä¸­æ¯ä¸ªå…ƒç»„
         for (int i = 0; i < 7; i++) {
             Tuple t = get_tuple(blk, i);
             if (t.x == X) {
-                // ·ûºÏÌõ¼ş
+                // ç¬¦åˆæ¡ä»¶
                 write_tuple_to_block_and_disk(&result_blk, &cur_output_blk, &offset, t);
                 printf("(X=%d, Y=%d)\n", t.x, t.y);
                 cnt++;
             } else if (t.x > X) {
-                // ËÑË÷Íê±Ï
+                // æœç´¢å®Œæ¯•
                 finish_flag = true;
                 break;
             }
         }
 
-        // ÊÍ·Å
+        // é‡Šæ”¾
         freeBlockInBuffer(blk, &buf);
     }
 
-    // »º³åÇøÖĞÈÔÓĞÎ´Ğ´»Ø´ÅÅÌµÄÊı¾İ
+    // ç¼“å†²åŒºä¸­ä»æœ‰æœªå†™å›ç£ç›˜çš„æ•°æ®
     if (offset != 0) {
-        // Ğ´ÈëÏÂÒ»¿éµÄµØÖ·
+        // å†™å…¥ä¸‹ä¸€å—çš„åœ°å€
         write_address_to_block(result_blk, cur_output_blk + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", cur_output_blk);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", cur_output_blk);
     } else {
-        // ÊÍ·Å
+        // é‡Šæ”¾
         freeBlockInBuffer(result_blk, &buf);
     }
 
-    printf("\nÂú×ãÑ¡ÔñÌõ¼şµÄÔª×éÒ»¹² %d ¸ö¡£\n\n"
-           "IO¶ÁĞ´Ò»¹² %lld ´Î¡£\n", cnt, buf.numIO - old_numIO);
+    printf("\næ»¡è¶³é€‰æ‹©æ¡ä»¶çš„å…ƒç»„ä¸€å…± %d ä¸ªã€‚\n\n"
+           "IOè¯»å†™ä¸€å…± %lld æ¬¡ã€‚\n", cnt, buf.numIO - old_numIO);
 }
 
 void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk) {
-    printf("----------------------------\n"
-           "»ùÓÚÅÅĞòµÄÍ¶Ó°Ëã·¨£¨²¢È¥ÖØ£©\n"
-           "----------------------------\n");
+    printf("-------------------------------\n"
+           "åŸºäºæ’åºçš„æŠ•å½±ç®—æ³•ï¼ˆå¹¶å»é‡ï¼‰\n"
+           "-------------------------------\n");
 
-    int cur_output_blk = first_output_blk;  // µ±Ç°Êä³ö¿éµÄ±àºÅ
-    int offset = 0;                         // Êä³ö¿éÖĞµÄÆ«ÒÆÁ¿
-    int attr_cnt = 0;                       // ²»Í¬µÄÊôĞÔµÄÊıÁ¿
+    int cur_output_blk = first_output_blk;  // å½“å‰è¾“å‡ºå—çš„ç¼–å·
+    int offset = 0;                         // è¾“å‡ºå—ä¸­çš„åç§»é‡
+    int attr_cnt = 0;                       // ä¸åŒçš„å±æ€§çš„æ•°é‡
 
-    unsigned char *result_blk;              // ¼ÇÂ¼½á¹û
+    unsigned char *result_blk;              // è®°å½•ç»“æœ
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    int last_attr = MAX_VALUE;              // ÉÏÒ»¸ö·ûºÏÌõ¼şµÄÊôĞÔ
-    // ±éÀúËùÓĞÊı¾İ¿é
+    int last_attr = MAX_VALUE;              // ä¸Šä¸€ä¸ªç¬¦åˆæ¡ä»¶çš„å±æ€§
+    // éå†æ‰€æœ‰æ•°æ®å—
     for (int addr = first_sorted_blk; addr <= last_sorted_blk; addr++) {
         unsigned char *blk;
         if ((blk = readBlockFromDisk(addr, &buf)) == NULL) {
@@ -834,13 +846,13 @@ void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk)
             exit(-1);
         }
 
-        printf("¶ÁÈëÊı¾İ¿é %d\n", addr);
+        printf("è¯»å…¥æ•°æ®å— %d\n", addr);
 
-        // ±éÀú¿éÖĞÔª×é
+        // éå†å—ä¸­å…ƒç»„
         for (int i = 0; i < 7; i++) {
             Tuple t = get_tuple(blk, i);
             if (last_attr != t.x) {
-                // ĞÂÊôĞÔ
+                // æ–°å±æ€§
                 last_attr = t.x;
                 write_attr_to_block_and_disk(&result_blk, &cur_output_blk, &offset, last_attr);
                 attr_cnt++;
@@ -848,51 +860,51 @@ void projection(int first_sorted_blk, int last_sorted_blk, int first_output_blk)
             }
         }
 
-        // ÊÍ·Å
+        // é‡Šæ”¾
         freeBlockInBuffer(blk, &buf);
     }
 
-    // »º³åÇøÖĞÈÔÓĞÎ´Ğ´»Ø´ÅÅÌµÄÊı¾İ
+    // ç¼“å†²åŒºä¸­ä»æœ‰æœªå†™å›ç£ç›˜çš„æ•°æ®
     if (offset != 0) {
-        // µ±Ç°¿éÒÑÂú£¬Ğ´Èë´ÅÅÌ
+        // å½“å‰å—å·²æ»¡ï¼Œå†™å…¥ç£ç›˜
         write_address_to_block(result_blk, cur_output_blk + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", cur_output_blk);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", cur_output_blk);
     } else {
         freeBlockInBuffer(result_blk, &buf);
     }
 
-    printf("\n¹ØÏµ R ÉÏµÄ A ÊôĞÔÂú×ãÍ¶Ó°£¨È¥ÖØ£©µÄÊôĞÔÖµÒ»¹² %d ¸ö¡£\n", attr_cnt);
+    printf("\nå…³ç³» R ä¸Šçš„ A å±æ€§æ»¡è¶³æŠ•å½±ï¼ˆå»é‡ï¼‰çš„å±æ€§å€¼ä¸€å…± %d ä¸ªã€‚\n", attr_cnt);
 }
 
 void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk,
                      int first_output_blk) {
-    printf("----------------------------\n"
-           "»ùÓÚÅÅĞòµÄÁ¬½ÓËã·¨\n"
-           "----------------------------\n");
+    printf("-------------------------------\n"
+           "åŸºäºæ’åºçš„è¿æ¥ç®—æ³•\n"
+           "-------------------------------\n");
 
-    int join_cnt = 0;                       // Á¬½Ó´ÎÊı
+    int join_cnt = 0;                       // è¿æ¥æ¬¡æ•°
 
-    int r_cur_blk = R_first_sorted_blk;     // µ±Ç°¶ÁÈ¡µÄ R ¹ØÏµµÄ¿é
-    int s_cur_blk = S_first_sorted_blk;     // µ±Ç°¶ÁÈ¡µÄ S ¹ØÏµµÄ¿é
+    int r_cur_blk = R_first_sorted_blk;     // å½“å‰è¯»å–çš„ R å…³ç³»çš„å—
+    int s_cur_blk = S_first_sorted_blk;     // å½“å‰è¯»å–çš„ S å…³ç³»çš„å—
 
-    int cur_output_blk = first_output_blk;  // µ±Ç°Êä³ö¿éµÄ±àºÅ
-    int offset = 0;                         // Êä³ö¿éÖĞµÄÆ«ÒÆÁ¿
+    int cur_output_blk = first_output_blk;  // å½“å‰è¾“å‡ºå—çš„ç¼–å·
+    int offset = 0;                         // è¾“å‡ºå—ä¸­çš„åç§»é‡
 
-    // ³õÊ¼»¯
-    unsigned char *result_blk;              // ¼ÇÂ¼Êä³ö½á¹û
+    // åˆå§‹åŒ–
+    unsigned char *result_blk;              // è®°å½•è¾“å‡ºç»“æœ
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    memset(result_blk, 0, BLOCK_SIZE);        // Çå¿Õ
+    memset(result_blk, 0, BLOCK_SIZE);        // æ¸…ç©º
 
     unsigned char *r_blk;                   // R
     if ((r_blk = readBlockFromDisk(r_cur_blk, &buf)) == NULL) {
@@ -906,8 +918,8 @@ void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_
         exit(-1);
     }
 
-    int r_blk_offset = 0;                   // ¼ÇÂ¼µ±Ç°ÕıÔÚ¶ÁÈ¡µÄ R µÄÔª×éÔÚ¿éÖĞµÄÆ«ÒÆÁ¿
-    int s_blk_offset = 0;                   // ¼ÇÂ¼µ±Ç°ÕıÔÚ¶ÁÈ¡µÄ S µÄÔª×éÔÚ¿éÖĞµÄÆ«ÒÆÁ¿
+    int r_blk_offset = 0;                   // è®°å½•å½“å‰æ­£åœ¨è¯»å–çš„ R çš„å…ƒç»„åœ¨å—ä¸­çš„åç§»é‡
+    int s_blk_offset = 0;                   // è®°å½•å½“å‰æ­£åœ¨è¯»å–çš„ S çš„å…ƒç»„åœ¨å—ä¸­çš„åç§»é‡
 
     while (r_cur_blk <= R_last_sorted_blk && s_cur_blk <= S_last_sorted_blk) {
         Tuple t_r = get_tuple(r_blk, r_blk_offset);
@@ -919,7 +931,7 @@ void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_
             s_blk_offset++;
         } else {
             // t_r.x == t_s.x
-            // ±éÀú´Ó´Ë´¦¿ªÊ¼µÄ R ¹ØÏµµÄÔª×é£¬Ö±µ½ t_r.x > t_s.x
+            // éå†ä»æ­¤å¤„å¼€å§‹çš„ R å…³ç³»çš„å…ƒç»„ï¼Œç›´åˆ° t_r.x > t_s.x
             int r_temp_blk = r_cur_blk;
             int r_temp_offset = r_blk_offset;
 
@@ -929,7 +941,7 @@ void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_
                 exit(-1);
             }
 
-            // ´Óµ±Ç°Î»ÖÃ¿ªÊ¼±éÀú£¬¼ÇÂ¼ËùÓĞÁ¬½ÓºóµÄÔª×é£¬Ö±µ½ t_r.x > t_s.x »ò±éÀúÍêËùÓĞ¿é
+            // ä»å½“å‰ä½ç½®å¼€å§‹éå†ï¼Œè®°å½•æ‰€æœ‰è¿æ¥åçš„å…ƒç»„ï¼Œç›´åˆ° t_r.x > t_s.x æˆ–éå†å®Œæ‰€æœ‰å—
             while (r_temp_blk <= R_last_sorted_blk) {
                 Tuple t_r_temp = get_tuple(r_temp, r_temp_offset);
 
@@ -941,33 +953,33 @@ void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_
                 write_join_tuple_to_block_and_disk(&result_blk, &cur_output_blk, &offset, t_r_temp, t_s);
                 join_cnt++;
 
-                r_temp_offset++;    // ÏÂÒ»¸öÔª×é
+                r_temp_offset++;    // ä¸‹ä¸€ä¸ªå…ƒç»„
                 if (r_temp_offset >= 7) {
-                    // µ±Ç°¿éÒÑ¶ÁÍê
-                    // ÊÍ·Å¿é
+                    // å½“å‰å—å·²è¯»å®Œ
+                    // é‡Šæ”¾å—
                     freeBlockInBuffer(r_temp, &buf);
-                    r_temp_blk++;   // ÏÂÒ»¿é
+                    r_temp_blk++;   // ä¸‹ä¸€å—
                     if (r_temp_blk > R_last_sorted_blk) {
-                        // ±éÀúÍê
+                        // éå†å®Œ
                         break;
                     }
                     if ((r_temp = readBlockFromDisk(r_temp_blk, &buf)) == NULL) {
                         perror("Reading Block Failed!\n");
                         exit(-1);
                     }
-                    r_temp_offset = 0;  // ÖØÖÃÆ«ÒÆÁ¿
+                    r_temp_offset = 0;  // é‡ç½®åç§»é‡
                 }
             }
 
-            s_blk_offset++;     // ÏÂÒ»¸öÔª×é
+            s_blk_offset++;     // ä¸‹ä¸€ä¸ªå…ƒç»„
         }
 
         if (r_blk_offset >= 7) {
-            // µ±Ç°¿éÒÑ¶ÁÍê
+            // å½“å‰å—å·²è¯»å®Œ
             freeBlockInBuffer(r_blk, &buf);
             r_cur_blk++;
             if (r_cur_blk > R_last_sorted_blk) {
-                // ±éÀúÍê
+                // éå†å®Œ
                 break;
             }
             if ((r_blk = readBlockFromDisk(r_cur_blk, &buf)) == NULL) {
@@ -978,11 +990,11 @@ void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_
         }
 
         if (s_blk_offset >= 7) {
-            // µ±Ç°¿éÒÑ¶ÁÍê
+            // å½“å‰å—å·²è¯»å®Œ
             freeBlockInBuffer(s_blk, &buf);
             s_cur_blk++;
             if (s_cur_blk > S_last_sorted_blk) {
-                // ±éÀúÍê
+                // éå†å®Œ
                 break;
             }
             if ((s_blk = readBlockFromDisk(s_cur_blk, &buf)) == NULL) {
@@ -993,54 +1005,54 @@ void sort_merge_join(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_
         }
     }
 
-    // »º³åÇøÖĞÈÔÓĞÎ´Ğ´»Ø´ÅÅÌµÄÊı¾İ
+    // ç¼“å†²åŒºä¸­ä»æœ‰æœªå†™å›ç£ç›˜çš„æ•°æ®
     if (offset != 0) {
-        // µ±Ç°¿éÒÑÂú£¬Ğ´Èë´ÅÅÌ
-        // Ğ´µØÖ·
+        // å½“å‰å—å·²æ»¡ï¼Œå†™å…¥ç£ç›˜
+        // å†™åœ°å€
         write_address_to_block(result_blk, cur_output_blk + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", cur_output_blk);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", cur_output_blk);
     } else {
-        // ÊÍ·Å
+        // é‡Šæ”¾
         freeBlockInBuffer(result_blk, &buf);
     }
 
-    // ÊÍ·Å
+    // é‡Šæ”¾
     freeBlockInBuffer(r_blk, &buf);
     freeBlockInBuffer(s_blk, &buf);
 
-    printf("\n×Ü¹²Á¬½Ó %d ´Î¡£\n", join_cnt);
+    printf("\næ€»å…±è¿æ¥ %d æ¬¡ã€‚\n", join_cnt);
 }
 
 void
 sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_first_sorted_blk, int S_last_sorted_blk,
                         int first_output_blk) {
-    printf("----------------------------\n"
-           "»ùÓÚÅÅĞòµÄ½»Ëã·¨\n"
-           "----------------------------\n");
+    printf("-------------------------------\n"
+           "åŸºäºæ’åºçš„äº¤ç®—æ³•\n"
+           "-------------------------------\n");
 
-    int cnt = 0;                            // ·ûºÏÌõ¼şµÄÔª×éÊı
+    int cnt = 0;                            // ç¬¦åˆæ¡ä»¶çš„å…ƒç»„æ•°
 
-    int r_cur_blk = R_first_sorted_blk;     // µ±Ç°¶ÁÈ¡µÄ R ¹ØÏµµÄ¿é
-    int s_cur_blk = S_first_sorted_blk;     // µ±Ç°¶ÁÈ¡µÄ S ¹ØÏµµÄ¿é
+    int r_cur_blk = R_first_sorted_blk;     // å½“å‰è¯»å–çš„ R å…³ç³»çš„å—
+    int s_cur_blk = S_first_sorted_blk;     // å½“å‰è¯»å–çš„ S å…³ç³»çš„å—
 
-    int cur_output_blk = first_output_blk;  // µ±Ç°Êä³ö¿éµÄ±àºÅ
-    int offset = 0;                         // Êä³ö¿éÖĞµÄÆ«ÒÆÁ¿
+    int cur_output_blk = first_output_blk;  // å½“å‰è¾“å‡ºå—çš„ç¼–å·
+    int offset = 0;                         // è¾“å‡ºå—ä¸­çš„åç§»é‡
 
-    // ³õÊ¼»¯
-    unsigned char *result_blk;              // ¼ÇÂ¼Êä³ö½á¹û
+    // åˆå§‹åŒ–
+    unsigned char *result_blk;              // è®°å½•è¾“å‡ºç»“æœ
     if ((result_blk = getNewBlockInBuffer(&buf)) == NULL) {
         perror("Get new Block Failed!\n");
         exit(-1);
     }
 
-    memset(result_blk, 0, BLOCK_SIZE);        // Çå¿Õ
+    memset(result_blk, 0, BLOCK_SIZE);        // æ¸…ç©º
 
     unsigned char *r_blk;                   // R
     if ((r_blk = readBlockFromDisk(r_cur_blk, &buf)) == NULL) {
@@ -1054,8 +1066,8 @@ sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_fir
         exit(-1);
     }
 
-    int r_blk_offset = 0;                   // ¼ÇÂ¼µ±Ç°ÕıÔÚ¶ÁÈ¡µÄ R µÄÔª×éÔÚ¿éÖĞµÄÆ«ÒÆÁ¿
-    int s_blk_offset = 0;                   // ¼ÇÂ¼µ±Ç°ÕıÔÚ¶ÁÈ¡µÄ S µÄÔª×éÔÚ¿éÖĞµÄÆ«ÒÆÁ¿
+    int r_blk_offset = 0;                   // è®°å½•å½“å‰æ­£åœ¨è¯»å–çš„ R çš„å…ƒç»„åœ¨å—ä¸­çš„åç§»é‡
+    int s_blk_offset = 0;                   // è®°å½•å½“å‰æ­£åœ¨è¯»å–çš„ S çš„å…ƒç»„åœ¨å—ä¸­çš„åç§»é‡
 
     while (r_cur_blk <= R_last_sorted_blk && s_cur_blk <= S_last_sorted_blk) {
         Tuple t_r = get_tuple(r_blk, r_blk_offset);
@@ -1067,7 +1079,7 @@ sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_fir
             s_blk_offset++;
         } else {
             // t_r.x == t_s.x
-            // ±éÀú´Ó´Ë´¦¿ªÊ¼µÄ R ¹ØÏµµÄÔª×é£¬Ö±µ½ t_r.x > t_s.x
+            // éå†ä»æ­¤å¤„å¼€å§‹çš„ R å…³ç³»çš„å…ƒç»„ï¼Œç›´åˆ° t_r.x > t_s.x
             int r_temp_blk = r_cur_blk;
             int r_temp_offset = r_blk_offset;
 
@@ -1077,7 +1089,7 @@ sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_fir
                 exit(-1);
             }
 
-            // ´Óµ±Ç°Î»ÖÃ¿ªÊ¼±éÀú£¬¼ÇÂ¼ËùÓĞÏàÍ¬µÄÔª×é£¬Ö±µ½ t_r.x > t_s.x »ò±éÀúÍêËùÓĞ¿é
+            // ä»å½“å‰ä½ç½®å¼€å§‹éå†ï¼Œè®°å½•æ‰€æœ‰ç›¸åŒçš„å…ƒç»„ï¼Œç›´åˆ° t_r.x > t_s.x æˆ–éå†å®Œæ‰€æœ‰å—
             while (r_temp_blk <= R_last_sorted_blk) {
                 Tuple t_r_temp = get_tuple(r_temp, r_temp_offset);
 
@@ -1087,39 +1099,39 @@ sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_fir
                 }
 
                 if (t_r_temp.y == t_s.y) {
-                    // Ôª×éÏàÍ¬
+                    // å…ƒç»„ç›¸åŒ
                     write_tuple_to_block_and_disk(&result_blk, &cur_output_blk, &offset, t_s);
                     printf("(X=%d, Y=%d)\n", t_s.x, t_s.y);
                     cnt++;
                 }
 
-                r_temp_offset++;    // ÏÂÒ»¸öÔª×é
+                r_temp_offset++;    // ä¸‹ä¸€ä¸ªå…ƒç»„
                 if (r_temp_offset >= 7) {
-                    // µ±Ç°¿éÒÑ¶ÁÍê
-                    // ÊÍ·Å¿é
+                    // å½“å‰å—å·²è¯»å®Œ
+                    // é‡Šæ”¾å—
                     freeBlockInBuffer(r_temp, &buf);
-                    r_temp_blk++;   // ÏÂÒ»¿é
+                    r_temp_blk++;   // ä¸‹ä¸€å—
                     if (r_temp_blk > R_last_sorted_blk) {
-                        // ±éÀúÍê
+                        // éå†å®Œ
                         break;
                     }
                     if ((r_temp = readBlockFromDisk(r_temp_blk, &buf)) == NULL) {
                         perror("Reading Block Failed!\n");
                         exit(-1);
                     }
-                    r_temp_offset = 0;  // ÖØÖÃ
+                    r_temp_offset = 0;  // é‡ç½®
                 }
             }
 
-            s_blk_offset++;     // ÏÂÒ»¸öÔª×é
+            s_blk_offset++;     // ä¸‹ä¸€ä¸ªå…ƒç»„
         }
 
         if (r_blk_offset >= 7) {
-            // µ±Ç°¿éÒÑ¶ÁÍê
+            // å½“å‰å—å·²è¯»å®Œ
             freeBlockInBuffer(r_blk, &buf);
-            r_cur_blk++;    // ÏÂÒ»¿é
+            r_cur_blk++;    // ä¸‹ä¸€å—
             if (r_cur_blk > R_last_sorted_blk) {
-                // ±éÀúÍê
+                // éå†å®Œ
                 break;
             }
             if ((r_blk = readBlockFromDisk(r_cur_blk, &buf)) == NULL) {
@@ -1130,11 +1142,11 @@ sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_fir
         }
 
         if (s_blk_offset >= 7) {
-            // µ±Ç°¿éÒÑ¶ÁÍê
+            // å½“å‰å—å·²è¯»å®Œ
             freeBlockInBuffer(s_blk, &buf);
             s_cur_blk++;
             if (s_cur_blk > S_last_sorted_blk) {
-                // ±éÀúÍê
+                // éå†å®Œ
                 break;
             }
             if ((s_blk = readBlockFromDisk(s_cur_blk, &buf)) == NULL) {
@@ -1146,25 +1158,25 @@ sort_merge_intersection(int R_first_sorted_blk, int R_last_sorted_blk, int S_fir
     }
 
     if (offset != 0) {
-        // µ±Ç°¿éÒÑÂú£¬Ğ´Èë´ÅÅÌ
-        // Ğ´µØÖ·
+        // å½“å‰å—å·²æ»¡ï¼Œå†™å…¥ç£ç›˜
+        // å†™åœ°å€
         write_address_to_block(result_blk, cur_output_blk + 1);
 
-        // Ğ´Èë´ÅÅÌ
+        // å†™å…¥ç£ç›˜
         if (writeBlockToDisk(result_blk, cur_output_blk, &buf) != 0) {
             perror("Writing Block Failed!\n");
             exit(-1);
         }
 
-        printf("×¢£º½á¹ûĞ´Èë´ÅÅÌ£º%d\n", cur_output_blk);
+        printf("æ³¨ï¼šç»“æœå†™å…¥ç£ç›˜ï¼š%d\n", cur_output_blk);
     } else {
-        // ÊÍ·Å
+        // é‡Šæ”¾
         freeBlockInBuffer(result_blk, &buf);
     }
 
-    // ÊÍ·Å
+    // é‡Šæ”¾
     freeBlockInBuffer(r_blk, &buf);
     freeBlockInBuffer(s_blk, &buf);
 
-    printf("\nS ºÍ R µÄ½»¼¯ÓĞ %d ¸öÔª×é¡£\n", cnt);
+    printf("\nS å’Œ R çš„äº¤é›†æœ‰ %d ä¸ªå…ƒç»„ã€‚\n", cnt);
 }
